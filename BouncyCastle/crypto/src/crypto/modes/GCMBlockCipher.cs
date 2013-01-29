@@ -40,11 +40,11 @@ namespace Org.BouncyCastle.Crypto.Modes
 		private int         bufOff;
 		private ulong		totalLength;
 
-		public GcmBlockCipher(
-			IBlockCipher c)
-			: this(c, null)
-		{
-	    }
+        public GcmBlockCipher(IBlockCipher c)
+            : this(c, null)
+        {
+
+        }
 
 	    public GcmBlockCipher(
 			IBlockCipher	c,
@@ -56,7 +56,9 @@ namespace Org.BouncyCastle.Crypto.Modes
 	        if (m == null)
 	        {
 	            // TODO Consider a static property specifying default multiplier
+                //m = new BasicGcmMultiplier();
 	            m = new Tables8kGcmMultiplier();
+                //m = new Tables64kGcmMultiplier();
 	        }
 
 			this.cipher = c;

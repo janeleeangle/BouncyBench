@@ -41,9 +41,11 @@ namespace CryptoTests.Tests
 
             tr.overhead = ((encrypted.Length - clearInput.Length) / (float)clearInput.Length);
             tr.name = encCipher.GetName();
-            tr.time = sw.Elapsed;
+            tr.time = new TimeSpan(sw.Elapsed.Ticks / iterations); // get average 
             tr.plainSizeBytes = clearInput.Length;
             tr.encryptSizeBytes = encrypted.Length;
+
+            TestResult.PrintResult(tr);
 
             return tr;
         }

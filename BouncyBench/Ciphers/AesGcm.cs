@@ -12,7 +12,10 @@ namespace CryptoTests.Ciphers
 {
     public  class AesGcm : IEncryptor
     {
-        private readonly SecureRandom Random = new SecureRandom();
+        // only requirement is unique, not crypto randomness. Counter can 
+        // also work but this is stateless
+        //private readonly SecureRandom Random = new SecureRandom();
+        private readonly Random Random = new Random(); 
 
         private readonly int NonceBitSize = 128;
         private readonly int MacBitSize = 128;
@@ -42,8 +45,8 @@ namespace CryptoTests.Ciphers
             if (IV != null)
                 throw new Exception("AesGcm generates IV internally, set IV to null");
 
-            if (secretMessage==null)
-                throw new ArgumentException("Message to encrypt required", "secretMessage");
+            if (secretMessage == null)
+                return null;
 
             //Non-secret Payload Optional
             nonSecretPayload = nonSecretPayload ?? new byte[] { };
@@ -52,7 +55,8 @@ namespace CryptoTests.Ciphers
 
             //Using random nonce large enough not to repeat
             var nonce = new byte[NonceBitSize / 8];
-            Random.NextBytes(nonce, 0, nonce.Length);
+            //Random.NextBytes(nonce, 0, nonce.Length);
+            Random.NextBytes(nonce);
 
             var cipher = new GcmBlockCipher(new AesFastEngine());
             var parameters = new AeadParameters(new KeyParameter(aesKey), MacBitSize, nonce, nonSecretPayload);
@@ -83,9 +87,9 @@ namespace CryptoTests.Ciphers
         {
             if (IVLength != 0)
                 throw new Exception("AesGcm knows IVLength internally, remove or set IVLength to 0 in call");
-            
+
             if (encryptedMessage == null)
-                throw new ArgumentException("Encrypted Message Required!", "encryptedMessage");
+                return null;
 
             var messageArray = encryptedMessage;
             using (var cipherStream = new MemoryStream(messageArray))
