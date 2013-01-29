@@ -45,6 +45,7 @@ namespace Org.BouncyCastle.Cms
 		}
 
 		/// <returns>The file handle</returns>
+		[Obsolete]
 		public virtual object GetContent()
 		{
 			return _file;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Globalization;
 
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
@@ -50,7 +49,7 @@ namespace Org.BouncyCastle.OpenSsl
 			this.random = random;
 		}
 
-		private PemObject CreatePemObject(object o)
+		private static PemObject CreatePemObject(object obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException("obj");
@@ -63,11 +62,11 @@ namespace Org.BouncyCastle.OpenSsl
 			string type;
 			byte[] encoding;
 
-			if (o is PemObject)
-				return (PemObject)o;
+			if (obj is PemObject)
+				return (PemObject)obj;
 
-			if (o is PemObjectGenerator)
-				return ((PemObjectGenerator)o).Generate();
+			if (obj is PemObjectGenerator)
+				return ((PemObjectGenerator)obj).Generate();
 
 			if (obj is X509Certificate)
 			{
@@ -148,7 +147,7 @@ namespace Org.BouncyCastle.OpenSsl
 //			return new string(chars);
 //		}
 
-		private PemObject CreatePemObject(
+		private static PemObject CreatePemObject(
 			object			obj,
 			string			algorithm,
 			char[]			password,
@@ -190,9 +189,9 @@ namespace Org.BouncyCastle.OpenSsl
 			}
 
 
-			string dekAlgName = algorithm.ToUpper(CultureInfo.InvariantCulture);
+			string dekAlgName = Platform.ToUpperInvariant(algorithm);
 
-			// Note: For backward compatibility
+            // Note: For backward compatibility
 			if (dekAlgName == "DESEDE")
 			{
 				dekAlgName = "DES-EDE3-CBC";
@@ -213,7 +212,7 @@ namespace Org.BouncyCastle.OpenSsl
 			return new PemObject(type, headers, encData);
 		}
 
-		private byte[] EncodePrivateKey(
+		private static byte[] EncodePrivateKey(
 			AsymmetricKeyParameter	akp,
 			out string				keyType)
 		{

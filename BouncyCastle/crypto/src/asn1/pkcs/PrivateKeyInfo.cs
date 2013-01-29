@@ -15,19 +15,15 @@ namespace Org.BouncyCastle.Asn1.Pkcs
 		private readonly Asn1Set				attributes;
 
 		public static PrivateKeyInfo GetInstance(
-            object obj)
-        {
-            if (obj is PrivateKeyInfo || obj == null)
-            {
-                return (PrivateKeyInfo) obj;
-            }
+			object obj)
+		{
+			if (obj is PrivateKeyInfo)
+				return (PrivateKeyInfo) obj;
 
 			if (obj != null)
-			{
 				return new PrivateKeyInfo(Asn1Sequence.GetInstance(obj));
-			}
 
-        	throw new ArgumentException("null object in factory");
+			return null;
 		}
 
 		public PrivateKeyInfo(
@@ -56,10 +52,10 @@ namespace Org.BouncyCastle.Asn1.Pkcs
             BigInteger version = ((DerInteger) e.Current).Value;
             if (version.IntValue != 0)
             {
-                throw new ArgumentException("wrong version for private key info");
+                throw new ArgumentException("wrong version for private key info: " + version.IntValue);
             }
 
-			e.MoveNext();
+            e.MoveNext();
             algID = AlgorithmIdentifier.GetInstance(e.Current);
 
 			try

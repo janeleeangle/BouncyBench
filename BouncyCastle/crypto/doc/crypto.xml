@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>BouncyCastle.Crypto</name>
+        <name>crypto</name>
     </assembly>
     <members>
         <member name="T:Org.BouncyCastle.Apache.Bzip2.BZip2Constants">
@@ -2219,6 +2219,11 @@
              @exception ArgumentException if the tagged object cannot
                            be converted.
         </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerObjectIdentifier.On(Org.BouncyCastle.Asn1.DerObjectIdentifier)">
+            Return  true if this oid is an extension of the passed in branch, stem.
+            @param stem the arc or branch that is a possible parent.
+            @return  true if the branch is on the passed in stem, false otherwise.
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.DerPrintableString">
             Der PrintableString object.
         </member>
@@ -2637,12 +2642,12 @@
         </member>
         <member name="T:Org.BouncyCastle.Asn1.Esf.RevocationValues">
             <remarks>
-            RFC 3126: 4.3.2 Revocation Values Attribute Definition
+            RFC 5126: 6.3.4.  revocation-values Attribute Definition
             <code>
             RevocationValues ::=  SEQUENCE {
             	crlVals			[0] SEQUENCE OF CertificateList     OPTIONAL,
             	ocspVals		[1] SEQUENCE OF BasicOCSPResponse   OPTIONAL,
-            	otherRevVals	[2] OtherRevVals
+            	otherRevVals	[2] OtherRevVals OPTIONAL
             }
             </code>
             </remarks>
@@ -3863,6 +3868,14 @@
                                  }
             </pre>
         </member>
+        <member name="M:Org.BouncyCastle.Asn1.Misc.IdeaCbcPar.ToAsn1Object">
+            Produce an object suitable for an Asn1OutputStream.
+            <pre>
+            IDEA-CBCPar ::= Sequence {
+                                 iv    OCTET STRING OPTIONAL -- exactly 8 octets
+                             }
+            </pre>
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.Misc.NetscapeCertType">
             The NetscapeCertType object.
             <pre>
@@ -4909,7 +4922,7 @@
             <pre>
             DistributionPointName ::= CHOICE {
                 fullName                 [0] GeneralNames,
-                nameRelativeToCRLIssuer  [1] RelativeDistinguishedName
+                nameRelativeToCRLIssuer  [1] RDN
             }
             </pre>
         </member>
@@ -7357,6 +7370,16 @@
         <member name="T:Org.BouncyCastle.Bcpg.Sig.Revocable">
             packet giving whether or not is revocable.
         </member>
+        <member name="T:Org.BouncyCastle.Bcpg.RevocationKey">
+            <summary>
+            Represents revocation key OpenPGP signature sub packet.
+            </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.RevocationReason">
+            <summary>
+            Represents revocation reason OpenPGP signature sub packet.
+            </summary>
+        </member>
         <member name="T:Org.BouncyCastle.Bcpg.Sig.SignatureCreationTime">
             packet giving signature creation time.
         </member>
@@ -8474,6 +8497,21 @@
             <summary>
             An <code>ISet</code> of <code>DerObjectIdentifier</code> objects.
             </summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Cms.OriginatorInformation.GetCertificates">
+             Return the certificates stored in the underlying OriginatorInfo object.
+            
+             @return a Store of X509CertificateHolder objects.
+        </member>
+        <member name="M:Org.BouncyCastle.Cms.OriginatorInformation.GetCrls">
+             Return the CRLs stored in the underlying OriginatorInfo object.
+            
+             @return a Store of X509CRLHolder objects.
+        </member>
+        <member name="M:Org.BouncyCastle.Cms.OriginatorInformation.ToAsn1Structure">
+             Return the underlying ASN.1 object defining this SignerInformation object.
+            
+             @return a OriginatorInfo.
         </member>
         <member name="T:Org.BouncyCastle.Cms.PasswordRecipientInformation">
             the RecipientInfo class for a recipient who has been sent a message
@@ -10020,6 +10058,73 @@
              @throws ArgumentException if the params argument is
                                               inappropriate (ie. the key is not 256 bit long).
         </member>
+        <member name="T:Org.BouncyCastle.Crypto.Engines.IdeaEngine">
+                * A class that provides a basic International Data Encryption Algorithm (IDEA) engine.
+                * <p>
+                * This implementation is based on the "HOWTO: INTERNATIONAL DATA ENCRYPTION ALGORITHM"
+                * implementation summary by Fauzan Mirza (F.U.Mirza@sheffield.ac.uk). (baring 1 typo at the
+                * end of the mulinv function!).
+            	* </p>
+                * <p>
+                * It can be found at ftp://ftp.funet.fi/pub/crypt/cryptography/symmetric/idea/
+            	* </p>
+                * <p>
+            	* Note 1: This algorithm is patented in the USA, Japan, and Europe including
+                * at least Austria, France, Germany, Italy, Netherlands, Spain, Sweden, Switzerland
+                * and the United Kingdom. Non-commercial use is free, however any commercial
+                * products are liable for royalties. Please see
+                * <a href="http://www.mediacrypt.com">www.mediacrypt.com</a> for
+                * further details. This announcement has been included at the request of
+                * the patent holders.
+            	* </p>
+            	* <p>
+            	* Note 2: Due to the requests concerning the above, this algorithm is now only
+            	* included in the extended assembly. It is not included in the default distributions.
+            	* </p>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.#ctor">
+            standard constructor.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.Init(System.Boolean,Org.BouncyCastle.Crypto.ICipherParameters)">
+             initialise an IDEA cipher.
+            
+             @param forEncryption whether or not we are for encryption.
+             @param parameters the parameters required to set up the cipher.
+             @exception ArgumentException if the parameters argument is
+             inappropriate.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.Mul(System.Int32,System.Int32)">
+             return x = x * y where the multiplication is done modulo
+             65537 (0x10001) (as defined in the IDEA specification) and
+             a zero input is taken to be 65536 (0x10000).
+            
+             @param x the x value
+             @param y the y value
+             @return x = x * y
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.ExpandKey(System.Byte[])">
+            The following function is used to expand the user key to the encryption
+            subkey. The first 16 bytes are the user key, and the rest of the subkey
+            is calculated by rotating the previous 16 bytes by 25 bits to the left,
+            and so on until the subkey is completed.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.MulInv(System.Int32)">
+                    * This function computes multiplicative inverse using Euclid's Greatest
+                    * Common Divisor algorithm. Zero and one are self inverse.
+                    * <p>
+                    * i.e. x * MulInv(x) == 1 (modulo BASE)
+            		* </p>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.AddInv(System.Int32)">
+                    * Return the additive inverse of x.
+                    * <p>
+                    * i.e. x + AddInv(x) == 0
+            		* </p>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Engines.IdeaEngine.InvertKey(System.Int32[])">
+            The function to invert the encryption subkey to the decryption subkey.
+            It also involves the multiplicative inverse and the additive inverse functions.
+        </member>
         <member name="T:Org.BouncyCastle.Crypto.Engines.IesEngine">
             support class for constructing intergrated encryption ciphers
             for doing basic message exchanges on top of key agreement ciphers
@@ -10563,7 +10668,7 @@
         <member name="T:Org.BouncyCastle.Crypto.Engines.Salsa20Engine">
             Implementation of Daniel J. Bernstein's Salsa20 stream cipher, Snuffle 2005
         </member>
-        <member name="F:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.stateSize">
+        <member name="F:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.StateSize">
             Constants 
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.Init(System.Boolean,Org.BouncyCastle.Crypto.ICipherParameters)">
@@ -10573,36 +10678,6 @@
              @param params the parameters required to set up the cipher.
              @exception ArgumentException if the params argument is
              inappropriate.
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.salsa20WordToByte(System.Int32[],System.Byte[])">
-             Salsa20 function
-            
-             @param   input   input data
-            
-             @return  keystream
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.intToByteLittle(System.Int32,System.Byte[],System.Int32)">
-             32 bit word to 4 byte array in little endian order
-            
-             @param   x   value to 'unpack'
-            
-             @return  value of x expressed as a byte[] array in little endian order
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.rotl(System.Int32,System.Int32)">
-             Rotate left
-            
-             @param   x   value to rotate
-             @param   y   amount to rotate x
-            
-             @return  rotated x
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.byteToIntLittle(System.Byte[],System.Int32)">
-             Pack byte[] array into an int in little endian order
-            
-             @param   x       byte array to 'pack'
-             @param   offset  only x[offset]..x[offset+3] will be packed
-            
-             @return  x[offset]..x[offset+3] 'packed' into an int in little-endian order
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Engines.SeedEngine">
             Implementation of the SEED algorithm as described in RFC 4009
@@ -10991,7 +11066,7 @@
              @param digest the digest to be used as the source of derived keys.
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Generators.Kdf2BytesGenerator">
-            KFD2 generator for derived keys and ivs as defined by IEEE P1363a/ISO 18033
+            KDF2 generator for derived keys and ivs as defined by IEEE P1363a/ISO 18033
             <br/>
             This implementation is based on IEEE P1363/ISO 18033.
         </member>
@@ -11032,7 +11107,7 @@
                         the ArrayList to be permuted
              @param rand
                         the source of Randomness for permutation
-             @return a new ArrayList with the permuted elements.
+             @return a new IList with the permuted elements.
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Generators.NaccacheSternKeyPairGenerator.findFirstPrimes(System.Int32)">
              Finds the first 'count' primes starting with 3
@@ -11097,14 +11172,14 @@
              converts a password to a byte array according to the scheme in
              Pkcs5 (ascii, no padding)
             
-             @param password a character array reqpresenting the password.
+             @param password a character array representing the password.
              @return a byte array representing the password.
         </member>
         <member name="M:Org.BouncyCastle.Crypto.PbeParametersGenerator.Pkcs5PasswordToUtf8Bytes(System.Char[])">
              converts a password to a byte array according to the scheme in
              PKCS5 (UTF-8, no padding)
             
-             @param password a character array reqpresenting the password.
+             @param password a character array representing the password.
              @return a byte array representing the password.
         </member>
         <member name="M:Org.BouncyCastle.Crypto.PbeParametersGenerator.Pkcs12PasswordToBytes(System.Char[])">
@@ -11799,6 +11874,18 @@
         <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetBlockSize">
             <returns>The block size for this cipher, in bytes.</returns>
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessAadByte(System.Byte)">
+            <summary>Add a single byte to the associated data check.</summary>
+            <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
+            <param name="input">The byte to be processed.</param>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessAadBytes(System.Byte[],System.Int32,System.Int32)">
+            <summary>Add a sequence of bytes to the associated data check.</summary>
+            <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
+            <param name="inBytes">The input byte array.</param>
+            <param name="inOff">The offset into the input array where the data to be processed starts.</param>
+            <param name="len">The number of bytes to be processed.</param>
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessByte(System.Byte,System.Byte[],System.Int32)">
              Encrypt/decrypt a single byte.
             
@@ -12482,6 +12569,13 @@
              </summary>
              <returns> the name of the algorithm the cipher implements.
              </returns>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Parameters.AeadParameters.#ctor(Org.BouncyCastle.Crypto.Parameters.KeyParameter,System.Int32,System.Byte[])">
+             Base constructor.
+            
+             @param key key to be used by underlying cipher
+             @param macSize macSize in bits
+             @param nonce nonce to be used
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Parameters.AeadParameters.#ctor(Org.BouncyCastle.Crypto.Parameters.KeyParameter,System.Int32,System.Byte[],System.Byte[])">
              Base constructor.
@@ -13299,6 +13393,9 @@
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsCipherFactory.CreateCipher(Org.BouncyCastle.Crypto.Tls.TlsClientContext,Org.BouncyCastle.Crypto.Tls.EncryptionAlgorithm,Org.BouncyCastle.Crypto.Tls.DigestAlgorithm)">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.DefaultTlsCipherFactory.CreateRC4Cipher(Org.BouncyCastle.Crypto.Tls.TlsClientContext,System.Int32,Org.BouncyCastle.Crypto.Tls.DigestAlgorithm)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.DefaultTlsCipherFactory.CreateAesCipher(Org.BouncyCastle.Crypto.Tls.TlsClientContext,System.Int32,Org.BouncyCastle.Crypto.Tls.DigestAlgorithm)">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
@@ -13508,6 +13605,22 @@
         <member name="T:Org.BouncyCastle.Crypto.Tls.RecordStream">
             <remarks>An implementation of the TLS 1.0 record layer.</remarks>
         </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tls.Ssl3Mac">
+            HMAC implementation based on original internet draft for HMAC (RFC 2104)
+            
+            The difference is that padding is concatentated versus XORed with the key
+            
+            H(K + opad, H(K + ipad, text))
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.Ssl3Mac.#ctor(Org.BouncyCastle.Crypto.IDigest)">
+            Base constructor for one of the standard digest algorithms that the byteLength of
+            the algorithm is know for. Behaviour is undefined for digests other than MD5 or SHA1.
+            
+            @param digest the digest.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.Ssl3Mac.Reset">
+            Reset the mac generator.
+        </member>
         <member name="T:Org.BouncyCastle.Crypto.Tls.TlsBlockCipher">
             <summary>
             A generic TLS 1.0 block cipher. This can be used for AES or 3DES for example.
@@ -13576,6 +13689,12 @@
              @param offset    The number of bytes to skip, before the key starts in the buffer.
              @param len       The length of the key.
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsMac.GetMacSecret">
+            @return the MAC write secret
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsMac.IncSequenceNumber">
+            Increment the current write sequence number
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsMac.CalculateMac(Org.BouncyCastle.Crypto.Tls.ContentType,System.Byte[],System.Int32,System.Int32)">
              Calculate the mac for some given data.
              <p/>
@@ -13586,6 +13705,9 @@
              @param offset  The number of bytes to skip, before the message starts.
              @param len     The length of the message.
              @return A new byte-buffer containing the mac value.
+        </member>
+        <member name="P:Org.BouncyCastle.Crypto.Tls.TlsMac.SequenceNumber">
+            @return the current write sequence number
         </member>
         <member name="P:Org.BouncyCastle.Crypto.Tls.TlsMac.Size">
             @return The Keysize of the mac.
@@ -13694,7 +13816,7 @@
             probability of 1 - (1/2)**certainty.
             <p>From Knuth Vol 2, pg 395.</p>
         </member>
-        <member name="M:Org.BouncyCastle.Math.BigInteger.ExtEuclid(Org.BouncyCastle.Math.BigInteger,Org.BouncyCastle.Math.BigInteger,Org.BouncyCastle.Math.BigInteger,Org.BouncyCastle.Math.BigInteger)">
+        <member name="M:Org.BouncyCastle.Math.BigInteger.ExtEuclid(Org.BouncyCastle.Math.BigInteger,Org.BouncyCastle.Math.BigInteger,Org.BouncyCastle.Math.BigInteger@)">
              Calculate the numbers u1, u2, and u3 such that:
             
              u1 * a + u2 * b = u3
@@ -13720,7 +13842,7 @@
         <member name="M:Org.BouncyCastle.Math.BigInteger.GetMQuote">
             Calculate mQuote = -m^(-1) mod b with b = 2^32 (32 = word size)
         </member>
-        <member name="M:Org.BouncyCastle.Math.BigInteger.MultiplyMonty(System.Int32[],System.Int32[],System.Int32[],System.Int32[],System.Int64)">
+        <member name="M:Org.BouncyCastle.Math.BigInteger.MultiplyMonty(System.Int32[],System.Int32[],System.Int32[],System.Int32[],System.UInt32,System.Boolean)">
             Montgomery multiplication: a = x * y * R^(-1) mod m
             <br/>
             Based algorithm 14.36 of Handbook of Applied Cryptography.
@@ -14606,6 +14728,15 @@
             create from an issuer certificate and the serial number of the
             certificate it signed.
             @exception OcspException if any problems occur creating the id fields.
+        </member>
+        <member name="M:Org.BouncyCastle.Ocsp.CertificateID.DeriveCertificateID(Org.BouncyCastle.Ocsp.CertificateID,Org.BouncyCastle.Math.BigInteger)">
+             Create a new CertificateID for a new serial number derived from a previous one
+             calculated for the same CA certificate.
+            
+             @param original the previously calculated CertificateID for the CA.
+             @param newSerialNumber the serial number for the new certificate of interest.
+            
+             @return a new CertificateID for newSerialNumber
         </member>
         <member name="P:Org.BouncyCastle.Ocsp.CertificateID.SerialNumber">
             return the serial number for the certificate associated
@@ -15735,6 +15866,21 @@
             Note: this overrides the generation of a creation time when the signature
             is generated.</p>
             </summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.PgpSignatureSubpacketGenerator.SetRevocationReason(System.Boolean,Org.BouncyCastle.Bcpg.RevocationReasonTag,System.String)">
+            <summary>
+            Sets revocation reason sub packet
+            </summary>	    
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.PgpSignatureSubpacketGenerator.SetRevocationKey(System.Boolean,Org.BouncyCastle.Bcpg.PublicKeyAlgorithmTag,System.Byte[])">
+            <summary>
+            Sets revocation key sub packet
+            </summary>	
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.PgpSignatureSubpacketGenerator.SetIssuerKeyID(System.Boolean,System.Int64)">
+            <summary>
+            Sets issuer key sub packet
+            </summary>	
         </member>
         <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.PgpSignatureSubpacketVector">
             <remarks>Container for a list of signature subpackets.</remarks>
@@ -17673,6 +17819,15 @@
             The value parameter becomes the contents of the octet string associated
             with the extension.
         </member>
+        <member name="M:Org.BouncyCastle.Tsp.TimeStampRequestGenerator.AddExtension(Org.BouncyCastle.Asn1.DerObjectIdentifier,System.Boolean,Org.BouncyCastle.Asn1.Asn1Encodable)">
+            add a given extension field for the standard extensions tag (tag 3)
+            @throws IOException
+        </member>
+        <member name="M:Org.BouncyCastle.Tsp.TimeStampRequestGenerator.AddExtension(Org.BouncyCastle.Asn1.DerObjectIdentifier,System.Boolean,System.Byte[])">
+            add a given extension field for the standard extensions tag
+            The value parameter becomes the contents of the octet string associated
+            with the extension.
+        </member>
         <member name="T:Org.BouncyCastle.Tsp.TimeStampResponse">
             Base class for an RFC 3161 Time Stamp Response object.
         </member>
@@ -17790,7 +17945,7 @@
         <member name="T:Org.BouncyCastle.Tsp.TspValidationException">
             Exception thrown if a TSP request or response fails to validate.
             <p>
-            If a failure code is assciated with the exception it can be retrieved using
+            If a failure code is associated with the exception it can be retrieved using
             the getFailureCode() method.</p>
         </member>
         <member name="P:Org.BouncyCastle.Tsp.TspValidationException.FailureCode">
@@ -19312,6 +19467,1156 @@
             <summary>
             Allows enumeration of the signature names supported by the generator.
             </summary>
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph1_utf16">
+            Unicode code point U+10400 coded as surrogate in two native Java UTF-16
+            code units
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph1_utf8">
+            U+10400 coded in UTF-8
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph2_utf16">
+            Unicode code point U+6771 in native Java UTF-16
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph2_utf8">
+            U+6771 coded in UTF-8
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph3_utf16">
+            Unicode code point U+00DF in native Java UTF-16
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph3_utf8">
+            U+00DF coded in UTF-8
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph4_utf16">
+            Unicode code point U+0041 in native Java UTF-16
+        </member>
+        <member name="F:Org.BouncyCastle.Asn1.Tests.DerUtf8StringTest.glyph4_utf8">
+            U+0041 coded in UTF-8
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.EncryptedPrivateKeyInfoTest">
+            Test the reading and writing of EncryptedPrivateKeyInfo objects using
+            the test vectors provided at
+            <a href="http://www.rsasecurity.com/rsalabs/pkcs/pkcs-5/index.html">
+            RSA's Pkcs5 Page</a>.
+            <br/>
+            The vectors are Base 64 encoded and encrypted using the password "password"
+            (without quotes). They should all yield the same PrivateKeyInfo object.
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.GeneralizedTimeTest">
+            X.690 test example
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.OidTest">
+            X.690 test example
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.PkiFailureInfoTest">
+            PKIFailureInfoTest
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.SetTest">
+            <remarks>Set sorting test example.</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.StringTest">
+            X.690 test example
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.TagTest">
+            X.690 test example
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.Tests.UtcTimeTest">
+            X.690 test example
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Examples.DesExample">
+            DesExample is a simple DES based encryptor/decryptor.
+            <p>
+            The program is command line driven, with the input
+            and output files specified on the command line.
+            <pre>
+            java org.bouncycastle.crypto.examples.DesExample infile outfile [keyfile]
+            </pre>
+            A new key is generated for each encryption, if key is not specified,
+            then the example will assume encryption is required, and as output
+            create deskey.dat in the current directory.  This key is a hex
+            encoded byte-stream that is used for the decryption.  The output
+            file is Hex encoded, 60 characters wide text file.
+            </p>
+            <p>
+            When encrypting;
+            <ul>
+             <li>the infile is expected to be a byte stream (text or binary)</li>
+             <li>there is no keyfile specified on the input line</li>
+            </ul>
+            </p>
+            <p>
+            When decrypting;
+             <li>the infile is expected to be the 60 character wide base64 
+               encoded file</li>
+             <li>the keyfile is expected to be a base64 encoded file</li>
+            </p>
+            <p>
+            This example shows how to use the light-weight API, DES and
+            the filesystem for message encryption and decryption.
+            </p>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.AesFastTest">
+            Test vectors from the NIST standard tests and Brian Gladman's vector set
+            <a href="http://fp.gladman.plus.com/cryptography_technology/rijndael/">
+            http://fp.gladman.plus.com/cryptography_technology/rijndael/</a>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.AesLightTest">
+            Test vectors from the NIST standard tests and Brian Gladman's vector set
+            <a href="http://fp.gladman.plus.com/cryptography_technology/rijndael/">
+            http://fp.gladman.plus.com/cryptography_technology/rijndael/</a>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.AesTest">
+            <summary> Test vectors from the NIST standard tests and Brian Gladman's vector set
+            <a href="http://fp.gladman.plus.com/cryptography_technology/rijndael/">
+            http://fp.gladman.plus.com/cryptography_technology/rijndael/</a>
+            </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.AesWrapTest">
+            Wrap Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.BlockCipherMonteCarloTest">
+            a basic test that takes a cipher, key parameter, and an input
+            and output string. This test wraps the engine in a buffered block
+            cipher with padding disabled.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.BlockCipherVectorTest">
+            a basic test that takes a cipher, key parameter, and an input
+            and output string. This test wraps the engine in a buffered block
+            cipher with padding disabled.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.BlowfishTest">
+            <remarks>Blowfish tester - vectors from http://www.counterpane.com/vectors.txt</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.CamelliaLightTest">
+            Camellia tester - vectors from https://www.cosic.esat.kuleuven.be/nessie/testvectors/ and RFC 3713
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.CamelliaTest">
+            Camellia tester - vectors from https://www.cosic.esat.kuleuven.be/nessie/testvectors/ and RFC 3713
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Cast5Test">
+            <remarks>Cast tester - vectors from http://www.ietf.org/rfc/rfc2144.txt</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Cast6Test">
+            <remarks>Cast6 tester - vectors from http://www.ietf.org/rfc/rfc2612.txt</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.CcmTest">
+            First four test vectors from
+            NIST Special Publication 800-38C.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.CMacTest">
+            CMAC tester - <a href="http://www.nuee.nagoya-u.ac.jp/labs/tiwata/omac/tv/omac1-tv.txt">Official Test Vectors</a>.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.CTSTest">
+            <summary> CTS tester</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.DesEdeTest">
+            DESede tester
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.DesTest">
+            DES tester - vectors from <a href="http://www.itl.nist.gov/fipspubs/fip81.htm">FIPS 81</a>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.DHKekGeneratorTest">
+            <remarks>DHKEK Generator tests - from RFC 2631.</remarks>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.DHTest.doTestGeneration(System.Int32)">
+            this test is can take quiet a while
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.DsaTest">
+            <summary>Test based on FIPS 186-2, Appendix 5, an example of DSA.</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.ECDHKekGeneratorTest">
+            <remarks>ECDHKEK Generator tests.</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.ECGost3410Test">
+            ECGOST3410 tests are taken from GOST R 34.10-2001.
+        </member>
+        <member name="F:Org.BouncyCastle.Crypto.Tests.ECGost3410Test.r">
+            ECGOST3410 over the field Fp<br/>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECGost3410Test.ecGOST3410_TestParam">
+            Test Sign and Verify with test parameters
+            see: http://www.ietf.org/internet-drafts/draft-popov-cryptopro-cpalgs-01.txt
+            gostR3410-2001-TestParamSet  P.46
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECGost3410Test.ecGOST3410_AParam">
+            Test Sign and Verify with A parameters
+            see: http://www.ietf.org/internet-drafts/draft-popov-cryptopro-cpalgs-01.txt
+            gostR3410-2001-CryptoPro-A-ParamSet  P.47
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECGost3410Test.ecGOST3410_BParam">
+            Test Sign and Verify with B parameters
+            see: http://www.ietf.org/internet-drafts/draft-popov-cryptopro-cpalgs-01.txt
+            gostR3410-2001-CryptoPro-B-ParamSet  P.47-48
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECGost3410Test.ecGOST3410_CParam">
+            Test Sign and Verify with C parameters
+            see: http://www.ietf.org/internet-drafts/draft-popov-cryptopro-cpalgs-01.txt
+            gostR3410-2001-CryptoPro-C-ParamSet  P.48
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.EcIesTest">
+            <remarks>Test for ECIES - Elliptic Curve Integrated Encryption Scheme</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.EcNrTest">
+            ECNR tests.
+        </member>
+        <member name="F:Org.BouncyCastle.Crypto.Tests.EcNrTest.r">
+            a basic regression test with 239 bit prime
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.ECTest">
+            ECDSA tests are taken from X9.62.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsa192bitPrime">
+            X9.62 - 1998,<br/>
+            J.3.1, Page 152, ECDSA over the field Fp<br/>
+            an example with 192 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsa239bitPrime">
+            X9.62 - 1998,<br/>
+            J.3.2, Page 155, ECDSA over the field Fp<br/>
+            an example with 239 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsa191bitBinary">
+            X9.62 - 1998,<br/>
+            J.2.1, Page 100, ECDSA over the field F2m<br/>
+            an example with 191 bit binary field
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsa239bitBinary">
+            X9.62 - 1998,<br/>
+            J.2.1, Page 100, ECDSA over the field F2m<br/>
+            an example with 191 bit binary field
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsa239bitBinaryAndLargeDigest">
+            General test for long digest.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECDsaKeyGenTest">
+            key generation test
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ECTest.TestECBasicAgreementTest">
+            Basic Key Agreement Test
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.ElGamalTest.doTestGeneration(System.Int32)">
+             this test is can take quiet a while
+            
+             @param size size of key in bits.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.GcmTest">
+            <summary>
+            Test vectors from "The Galois/Counter Mode of Operation (GCM)", McGrew/Viega, Appendix B
+            </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Gost28147MacTest">
+            GOST 28147 MAC tester
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.HCFamilyTest">
+            HC-128 and HC-256 Tests. Based on the test vectors in the official reference
+            papers, respectively:
+            <pre>
+            http://www.ecrypt.eu.org/stream/p3ciphers/hc/hc128_p3.pdf
+            http://www.ecrypt.eu.org/stream/p3ciphers/hc/hc256_p3.pdf
+            </pre>
+            See HCFamilyVecTest for a more exhaustive test based on the ecrypt vectors.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.HCFamilyVecTest">
+            HC-128 and HC-256 Tests. Based on the test vectors in the official reference
+            papers, respectively:
+            
+            http://www.ecrypt.eu.org/stream/p3ciphers/hc/hc128_p3.pdf
+            http://www.ecrypt.eu.org/stream/p3ciphers/hc/hc256_p3.pdf
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.IsaacTest">
+            ISAAC Test - see http://www.burtleburtle.net/bob/rand/isaacafa.html
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.ISO9796Test">
+            <summary> test vectors from ISO 9796-1 and ISO 9796-2 edition 1.</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Kdf1GeneratorTest">
+            KDF1 tests - vectors from ISO 18033.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Kdf2GeneratorTest">
+            KDF2 tests - vectors from ISO 18033.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.MacTest">
+            <remarks> MAC tester - vectors from
+            <a href="http://www.itl.nist.gov/fipspubs/fip81.htm">FIP 81</a> and
+            <a href="http://www.itl.nist.gov/fipspubs/fip113.htm">FIP 113</a>.
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.MD2DigestTest">
+             standard vector test for MD2
+             from RFC1319 by B.Kaliski of RSA Laboratories April 1992
+            
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.MD4DigestTest">
+            standard vector test for MD4 from RFC 1320.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.MD5DigestTest">
+            <remarks>Standard vector test for MD5 from "Handbook of Applied Cryptography", page 345.</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.MD5HMacTest">
+            <remarks> MD5 HMac Test, test vectors from RFC 2202</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Mgf1GeneratorTest">
+            MGF1 tests - vectors from ISO 18033 for KDF1 (equivalent).
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.ModeTest">
+            <remarks> CFB/OFB Mode test of IV padding.</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.NaccacheSternTest">
+             Test case for NaccacheStern cipher. For details on this cipher, please see
+            
+             http://www.gemplus.com/smart/rd/publications/pdf/NS98pkcs.pdf
+            
+             Performs the following tests:
+              <ul>
+              <li> Toy example from the NaccacheSternPaper </li>
+              <li> 768 bit test with text "Now is the time for all good men." (ripped from RSA test) and
+                 the same test with the first byte replaced by 0xFF </li>
+              <li> 1024 bit test analog to 768 bit test </li>
+              </ul>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.NoekeonTest">
+            Noekeon tester
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.PaddingTest">
+            General Padding tests.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Pkcs12Test">
+            <remarks> test for Pkcs12 key generation - vectors from
+            <a href="http://www.drh-consultancy.demon.co.uk/test.txt">
+            http://www.drh-consultancy.demon.co.uk/test.txt</a>
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Pkcs5Test">
+            <summary> A test class for Pkcs5 PbeS2 with PBKDF2 (Pkcs5 v2.0) using
+            test vectors provider at
+            <a href="http://www.rsasecurity.com/rsalabs/pkcs/pkcs-5/index.html">
+            RSA's Pkcs5 Page</a>
+            <br/>
+            The vectors are Base 64 encoded and encrypted using the password "password"
+            (without quotes). They should all yield the same PrivateKeyInfo object.
+            </summary>
+        </member>
+        <member name="F:Org.BouncyCastle.Crypto.Tests.Pkcs5Test.sample1">
+            <summary> encrypted using des-cbc.</summary>
+        </member>
+        <member name="F:Org.BouncyCastle.Crypto.Tests.Pkcs5Test.sample2">
+            <summary> encrypted using des-ede3-cbc.</summary>
+        </member>
+        <member name="F:Org.BouncyCastle.Crypto.Tests.Pkcs5Test.sample3">
+            <summary> encrypted using rc2-cbc.</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.PssTest">
+            <remarks>RSA PSS test vectors for PKCS#1 V2.1</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RC2Test">
+             <summary> RC2 tester - vectors from  ftp://ftp.isi.edu/in-notes/rfc2268.txt
+            
+             RFC 2268 "A Description of the RC2(r) Encryption Algorithm"
+             </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RC2WrapTest">
+            RC2 wrap tester
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RC4Test">
+            <summary> RC4 Test</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RC5Test">
+             RC5 tester - vectors from ftp://ftp.nordu.net/rfc/rfc2040.txt
+            
+             RFC 2040 "The RC5, RC5-CBC, RC5-CBC-Pad, and RC5-CTS Algorithms"
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RC6Test">
+            <remarks> RC6 Test - test vectors from AES Submitted RSA Reference implementation.
+            ftp://ftp.funet.fi/pub/crypt/cryptography/symmetric/aes/rc6-unix-refc.tar
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Rfc3211WrapTest">
+            Wrap Test based on RFC3211 test vectors
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RijndaelTest">
+            Test vectors from the NIST standard tests and Brian Gladman's vector set
+            <a href="http://fp.gladman.plus.com/cryptography_technology/rijndael/">
+            http://fp.gladman.plus.com/cryptography_technology/rijndael/</a>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD128DigestTest">
+            RipeMD128 IDigest Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD128HMacTest">
+            RipeMD128 HMac Test, test vectors from RFC 2286
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD160DigestTest">
+            RipeMD160 IDigest Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD160HMacTest">
+            RipeMD160 HMac Test, test vectors from RFC 2286
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD256DigestTest">
+            <summary> RipeMD256 IDigest Test</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.RipeMD320DigestTest">
+            <summary> RipeMD320 IDigest Test</summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tests.RsaTest.doTestBadSig">
+            signature with a "forged signature" (sig block not at end of plain text)
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Salsa20Test">
+            Salsa20 Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.SCryptTest">
+            <summary>
+            scrypt test vectors from "Stronger Key Derivation Via Sequential Memory-hard Functions" Appendix B.
+            (http://www.tarsnap.com/scrypt/scrypt.pdf)
+            </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.SeedTest">
+            SEED tester - vectors http://www.ietf.org/rfc/rfc4009.txt
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha1DigestTest">
+            <remarks>Standard vector test for SHA-1 from "Handbook of Applied Cryptography", page 345.</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha1HMacTest">
+            <summary> SHA1 HMac Test, test vectors from RFC 2202</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha224DigestTest">
+            standard vector test for SHA-224 from RFC 3874 - only the last three are in
+            the RFC.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha224HMacTest">
+            <summary> SHA224 HMac Test, test vectors from RFC</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha256DigestTest">
+             standard vector test for SHA-256 from FIPS Draft 180-2.
+            
+             Note, the first two vectors are _not_ from the draft, the last three are.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha256HMacTest">
+            <summary> SHA256 HMac Test, test vectors from RFC</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha384DigestTest">
+             standard vector test for SHA-384 from FIPS Draft 180-2.
+            
+             Note, the first two vectors are _not_ from the draft, the last three are.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha384HMacTest">
+            <summary> SHA384 HMac Test, test vectors from RFC</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha512DigestTest">
+            <summary>
+            Standard vector test for SHA-512 from FIPS Draft 180-2.
+            Note, the first two vectors are _not_ from the draft, the last three are.
+            </summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.Sha512HMacTest">
+            <summary> SHA512 HMac Test, test vectors from RFC</summary>
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.StreamCipherVectorTest">
+            a basic test that takes a stream cipher, key parameter, and an input
+            and output string.
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.TeaTest">
+            TEA tester - based on C implementation results from http://www.simonshepherd.supanet.com/tea.htm
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.TigerDigestTest">
+            Tiger IDigest Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.VmpcKsa3Test">
+            VMPC Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.VmpcTest">
+            VMPC Test
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.WhirlpoolDigestTest">
+             ISO vector test for Whirlpool
+            
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.Tests.XteaTest">
+            TEA tester - based on C implementation results from http://www.simonshepherd.supanet.com/tea.htm
+        </member>
+        <member name="T:Org.BouncyCastle.Math.EC.Tests.ECPointPerformanceTest">
+            Compares the performance of the the window NAF point multiplication against
+            conventional point multiplication.
+        </member>
+        <member name="T:Org.BouncyCastle.Math.EC.Tests.ECPointTest">
+            Test class for {@link org.bouncycastle.math.ec.ECPoint ECPoint}. All
+            literature values are taken from "Guide to elliptic curve cryptography",
+            Darrel Hankerson, Alfred J. Menezes, Scott Vanstone, 2004, Springer-Verlag
+            New York, Inc.
+        </member>
+        <member name="F:Org.BouncyCastle.Math.EC.Tests.ECPointTest.secRand">
+            Random source used to generate random points
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestPointCreationConsistency">
+            Tests, if inconsistent points can be created, i.e. points with exactly
+            one null coordinate (not permitted).
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestAdd(Org.BouncyCastle.Math.EC.ECPoint[],Org.BouncyCastle.Math.EC.ECPoint)">
+             Tests <code>ECPoint.add()</code> against literature values.
+            
+             @param p
+                        The array of literature values.
+             @param infinity
+                        The point at infinity on the respective curve.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestAdd">
+            Calls <code>implTestAdd()</code> for <code>Fp</code> and
+            <code>F2m</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestTwice(Org.BouncyCastle.Math.EC.ECPoint[])">
+             Tests <code>ECPoint.twice()</code> against literature values.
+            
+             @param p
+                        The array of literature values.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestTwice">
+            Calls <code>implTestTwice()</code> for <code>Fp</code> and
+            <code>F2m</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestAllPoints(Org.BouncyCastle.Math.EC.ECPoint,Org.BouncyCastle.Math.EC.ECPoint)">
+             Goes through all points on an elliptic curve and checks, if adding a
+             point <code>k</code>-times is the same as multiplying the point by
+             <code>k</code>, for all <code>k</code>. Should be called for points
+             on very small elliptic curves only.
+            
+             @param p
+                        The base point on the elliptic curve.
+             @param infinity
+                        The point at infinity on the elliptic curve.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestAllPoints">
+            Calls <code>implTestAllPoints()</code> for the small literature curves,
+            both for <code>Fp</code> and <code>F2m</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.multiply(Org.BouncyCastle.Math.EC.ECPoint,Org.BouncyCastle.Math.BigInteger)">
+             Simple shift-and-add multiplication. Serves as reference implementation
+             to verify (possibly faster) implementations in
+             {@link org.bouncycastle.math.ec.ECPoint ECPoint}.
+            
+             @param p
+                        The point to multiply.
+             @param k
+                        The multiplier.
+             @return The result of the point multiplication <code>kP</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestMultiply(Org.BouncyCastle.Math.EC.ECPoint,System.Int32)">
+             Checks, if the point multiplication algorithm of the given point yields
+             the same result as point multiplication done by the reference
+             implementation given in <code>multiply()</code>. This method chooses a
+             random number by which the given point <code>p</code> is multiplied.
+            
+             @param p
+                        The point to be multiplied.
+             @param numBits
+                        The bitlength of the random number by which <code>p</code>
+                        is multiplied.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestMultiplyAll(Org.BouncyCastle.Math.EC.ECPoint,System.Int32)">
+             Checks, if the point multiplication algorithm of the given point yields
+             the same result as point multiplication done by the reference
+             implementation given in <code>multiply()</code>. This method tests
+             multiplication of <code>p</code> by every number of bitlength
+             <code>numBits</code> or less.
+            
+             @param p
+                        The point to be multiplied.
+             @param numBits
+                        Try every multiplier up to this bitlength
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestAddSubtract(Org.BouncyCastle.Math.EC.ECPoint,Org.BouncyCastle.Math.EC.ECPoint)">
+             Tests <code>ECPoint.add()</code> and <code>ECPoint.subtract()</code>
+             for the given point and the given point at infinity.
+            
+             @param p
+                        The point on which the tests are performed.
+             @param infinity
+                        The point at infinity on the same curve as <code>p</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestAddSubtractMultiplySimple">
+            Calls <code>implTestAddSubtract()</code> for literature values, both
+            for <code>Fp</code> and <code>F2m</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.implTestEncoding(Org.BouncyCastle.Math.EC.ECPoint)">
+             Test encoding with and without point compression.
+            
+             @param p
+                        The point to be encoded and decoded.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.TestAddSubtractMultiplyTwiceEncoding">
+            Calls <code>implTestAddSubtract()</code>,
+            <code>implTestMultiply</code> and <code>implTestEncoding</code> for
+            the standard elliptic curves as given in <code>SecNamedCurves</code>.
+        </member>
+        <member name="T:Org.BouncyCastle.Math.EC.Tests.ECPointTest.Fp">
+            Nested class containing sample literature values for <code>Fp</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.Fp.createPoints">
+            Creates the points on the curve with literature values.
+        </member>
+        <member name="T:Org.BouncyCastle.Math.EC.Tests.ECPointTest.F2m">
+            Nested class containing sample literature values for <code>F2m</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Tests.ECPointTest.F2m.createPoints">
+            Creates the points on the curve with literature values.
+        </member>
+        <member name="F:Org.BouncyCastle.Ocsp.Tests.OcspTest.irregReq">
+            extra version number encoding.
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.ByteArrayHandler">
+             Simple routine to encrypt and decrypt using a passphrase.
+             This service routine provides the basic PGP services between
+             byte arrays.
+            
+             Note: this code plays no attention to -Console in the file name
+             the specification of "_CONSOLE" in the filename.
+             It also expects that a single pass phrase will have been used.
+            
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.ByteArrayHandler.Decrypt(System.Byte[],System.Char[])">
+             decrypt the passed in message stream
+            
+             @param encrypted  The message to be decrypted.
+             @param passPhrase Pass phrase (key)
+            
+             @return Clear text as a byte array.  I18N considerations are
+                     not handled by this routine
+             @exception IOException
+             @exception PgpException
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.ByteArrayHandler.Encrypt(System.Byte[],System.Char[],System.String,Org.BouncyCastle.Bcpg.SymmetricKeyAlgorithmTag,System.Boolean)">
+             Simple PGP encryptor between byte[].
+            
+             @param clearData  The test to be encrypted
+             @param passPhrase The pass phrase (key).  This method assumes that the
+                               key is a simple pass phrase, and does not yet support
+                               RSA or more sophisiticated keying.
+             @param fileName   File name. This is used in the Literal Data Packet (tag 11)
+                               which is really inly important if the data is to be
+                               related to a file to be recovered later.  Because this
+                               routine does not know the source of the information, the
+                               caller can set something here for file name use that
+                               will be carried.  If this routine is being used to
+                               encrypt SOAP MIME bodies, for example, use the file name from the
+                               MIME type, if applicable. Or anything else appropriate.
+            
+             @param armor
+            
+             @return encrypted data.
+             @exception IOException
+             @exception PgpException
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.ClearSignedFileProcessor">
+                * A simple utility class that creates clear signed files and verifies them.
+                * <p>
+                * To sign a file: ClearSignedFileProcessor -s fileName secretKey passPhrase.
+            	* </p>
+                * <p>
+                * To decrypt: ClearSignedFileProcessor -v fileName signatureFile publicKeyFile.
+            	* </p>
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.DetachedSignatureProcessor">
+            A simple utility class that creates seperate signatures for files and verifies them.
+            <p>
+            To sign a file: DetachedSignatureProcessor -s [-a] fileName secretKey passPhrase.<br/>
+            If -a is specified the output file will be "ascii-armored".</p>
+            <p>
+            To decrypt: DetachedSignatureProcessor -v  fileName signatureFile publicKeyFile.</p>
+            <p>
+            Note: this example will silently overwrite files.
+            It also expects that a single pass phrase
+            will have been used.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.DetachedSignatureProcessor.VerifySignature(System.String,System.IO.Stream,System.IO.Stream)">
+            verify the signature in in against the file fileName.
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.DirectKeySignature">
+            A simple utility class that directly signs a public key and writes the signed key to "SignedKey.asc" in 
+            the current working directory.
+            <p>
+            To sign a key: DirectKeySignature secretKeyFile secretKeyPass publicKeyFile(key to be signed) NotationName NotationValue.<br/>
+            </p><p>
+            To display a NotationData packet from a publicKey previously signed: DirectKeySignature signedPublicKeyFile.<br/>
+            </p><p>
+            <b>Note</b>: this example will silently overwrite files, nor does it pay any attention to
+            the specification of "_CONSOLE" in the filename. It also expects that a single pass phrase
+            will have been used.
+            </p>
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.DsaElGamalKeyRingGenerator">
+            A simple utility class that Generates a public/secret keyring containing a DSA signing
+            key and an El Gamal key for encryption.
+            <p>
+            usage: DSAElGamalKeyRingGenerator [-a] identity passPhrase</p>
+            <p>
+            Where identity is the name to be associated with the public key. The keys are placed
+            in the files pub.[asc|bpg] and secret.[asc|bpg].</p>
+            <p>
+            <b>Note</b>: this example encrypts the secret key using AES_256, many PGP products still
+            do not support this, if you are having problems importing keys try changing the algorithm
+            id to PgpEncryptedData.Cast5. CAST5 is more widelysupported.</p>
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.KeyBasedFileProcessor">
+                * A simple utility class that encrypts/decrypts public key based
+                * encryption files.
+                * <p>
+                * To encrypt a file: KeyBasedFileProcessor -e [-a|-ai] fileName publicKeyFile.<br/>
+                * If -a is specified the output file will be "ascii-armored".
+                * If -i is specified the output file will be have integrity checking added.</p>
+                * <p>
+                * To decrypt: KeyBasedFileProcessor -d fileName secretKeyFile passPhrase.</p>
+                * <p>
+            	* Note 1: this example will silently overwrite files, nor does it pay any attention to
+            	* the specification of "_CONSOLE" in the filename. It also expects that a single pass phrase
+            	* will have been used.</p>
+            	* <p>
+            	* Note 2: if an empty file name has been specified in the literal data object contained in the
+            	* encrypted packet a file with the name filename.out will be generated in the current working directory.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.KeyBasedFileProcessor.DecryptFile(System.IO.Stream,System.IO.Stream,System.Char[],System.String)">
+            decrypt the passed in message stream
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.KeyBasedLargeFileProcessor">
+                * A simple utility class that encrypts/decrypts public key based
+                * encryption large files.
+                * <p>
+                * To encrypt a file: KeyBasedLargeFileProcessor -e [-a|-ai] fileName publicKeyFile.<br/>
+                * If -a is specified the output file will be "ascii-armored".
+                * If -i is specified the output file will be have integrity checking added.</p>
+                * <p>
+                * To decrypt: KeyBasedLargeFileProcessor -d fileName secretKeyFile passPhrase.</p>
+                * <p>
+                * Note 1: this example will silently overwrite files, nor does it pay any attention to
+                * the specification of "_CONSOLE" in the filename. It also expects that a single pass phrase
+                * will have been used.</p>
+                * <p>
+                * Note 2: this example Generates partial packets to encode the file, the output it Generates
+                * will not be readable by older PGP products or products that don't support partial packet
+                * encoding.</p>
+            	* <p>
+            	* Note 3: if an empty file name has been specified in the literal data object contained in the
+            	* encrypted packet a file with the name filename.out will be generated in the current working directory.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.KeyBasedLargeFileProcessor.DecryptFile(System.IO.Stream,System.IO.Stream,System.Char[],System.String)">
+            decrypt the passed in message stream
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PbeFileProcessor">
+            A simple utility class that encrypts/decrypts password based
+            encryption files.
+            <p>
+            To encrypt a file: PBEFileProcessor -e [-ai] fileName passPhrase.<br/>
+            If -a is specified the output file will be "ascii-armored".<br/>
+            If -i is specified the output file will be "integrity protected".</p>
+            <p>
+            To decrypt: PBEFileProcessor -d fileName passPhrase.</p>
+            <p>
+            Note: this example will silently overwrite files, nor does it pay any attention to
+            the specification of "_CONSOLE" in the filename. It also expects that a single pass phrase
+            will have been used.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PbeFileProcessor.DecryptFile(System.IO.Stream,System.Char[])">
+            decrypt the passed in message stream
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PgpExampleUtilities.FindSecretKey(Org.BouncyCastle.Bcpg.OpenPgp.PgpSecretKeyRingBundle,System.Int64,System.Char[])">
+            Search a secret key ring collection for a secret key corresponding to keyID if it
+            exists.
+            
+            @param pgpSec a secret key ring collection.
+            @param keyID keyID we want.
+            @param pass passphrase to decrypt secret key with.
+            @return
+            @throws PGPException
+            @throws NoSuchProviderException
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PgpExampleUtilities.ReadPublicKey(System.IO.Stream)">
+            A simple routine that opens a key ring file and loads the first available key
+            suitable for encryption.
+            
+            @param input
+            @return
+            @throws IOException
+            @throws PGPException
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PgpExampleUtilities.ReadSecretKey(System.IO.Stream)">
+            A simple routine that opens a key ring file and loads the first available key
+            suitable for signature generation.
+            
+            @param input stream to read the secret key ring collection from.
+            @return a secret key.
+            @throws IOException on a problem with using the input stream.
+            @throws PGPException if there is an issue parsing the input stream.
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.PublicKeyRingDump">
+            Basic class which just lists the contents of the public key file passed
+            as an argument. If the file contains more than one "key ring" they are
+            listed in the order found.
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.RsaKeyRingGenerator">
+            A simple utility class that Generates a RSA PgpPublicKey/PgpSecretKey pair.
+            <p>
+            usage: RsaKeyRingGenerator [-a] identity passPhrase</p>
+            <p>
+            Where identity is the name to be associated with the public key. The keys are placed
+            in the files pub.[asc|bpg] and secret.[asc|bpg].</p>
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Examples.SignedFileProcessor">
+            A simple utility class that signs and verifies files.
+            <p>
+            To sign a file: SignedFileProcessor -s [-a] fileName secretKey passPhrase.<br/>
+            If -a is specified the output file will be "ascii-armored".</p>
+            <p>
+            To decrypt: SignedFileProcessor -v fileName publicKeyFile.</p>
+            <p>
+            <b>Note</b>: this example will silently overwrite files, nor does it pay any attention to
+            the specification of "_CONSOLE" in the filename. It also expects that a single pass phrase
+            will have been used.</p>
+            <p>
+            <b>Note</b>: the example also makes use of PGP compression. If you are having difficulty Getting it
+            to interoperate with other PGP programs try removing the use of compression first.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.SignedFileProcessor.VerifyFile(System.IO.Stream,System.IO.Stream)">
+            verify the passed in file as being correctly signed.
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Examples.SignedFileProcessor.SignFile(System.String,System.IO.Stream,System.IO.Stream,System.Char[],System.Boolean,System.Boolean)">
+             Generate an encapsulated signed file.
+            
+             @param fileName
+             @param keyIn
+             @param outputStream
+             @param pass
+             @param armor
+        </member>
+        <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.Tests.Dsa2Test">
+            GPG compatability test vectors
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Tests.PgpDsaTest.GenerateTest(Org.BouncyCastle.Bcpg.OpenPgp.PgpSecretKeyRing,Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKey,Org.BouncyCastle.Bcpg.OpenPgp.PgpPrivateKey)">
+             Generated signature test
+            
+             @param sKey
+             @param pgpPrivKey
+             @return test result
+        </member>
+        <member name="F:Org.BouncyCastle.Bcpg.OpenPgp.Tests.PgpPbeTest.testPBEAsym">
+            Message with both PBE and symmetric
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.Tests.PgpPbeTest.DecryptMessage(System.Byte[])">
+            decrypt the passed in message stream
+        </member>
+        <member name="T:Org.BouncyCastle.OpenSsl.Tests.ReaderTest">
+            basic class for reading test.pem - the password is "secret"
+        </member>
+        <member name="T:Org.BouncyCastle.Pkcs.Examples.Pkcs12Example">
+            Example of how to set up a certificate chain and a PKCS 12 store for
+            a private individual - obviously you'll need to generate your own keys,
+            and you may need to add a NetscapeCertType extension or add a key
+            usage extension depending on your application, but you should get the
+            idea! As always this is just an example...
+        </member>
+        <member name="M:Org.BouncyCastle.Pkcs.Examples.Pkcs12Example.CreateMasterCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter)">
+            we generate the CA's certificate
+        </member>
+        <member name="M:Org.BouncyCastle.Pkcs.Examples.Pkcs12Example.CreateIntermediateCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.X509.X509Certificate)">
+            we generate an intermediate certificate signed by our CA
+        </member>
+        <member name="M:Org.BouncyCastle.Pkcs.Examples.Pkcs12Example.CreateCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter)">
+            we generate a certificate signed by our CA's intermediate certficate
+        </member>
+        <member name="T:Org.BouncyCastle.Pkcs.Tests.Pkcs12StoreTest">
+            Exercise the various key stores, making sure we at least get back what we put in!
+            <p>This tests both the PKCS12 key store.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Pkcs.Tests.Pkcs12StoreTest.CreateCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,System.String,System.String)">
+            we generate a self signed certificate for the sake of testing - RSA
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.AesSicTest">
+            <remarks>
+            Test vectors based on NIST Special Publication 800-38A,
+            "Recommendation for Block Cipher Modes of Operation"
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.AesTest">
+            <remarks>Basic test class for the AES cipher vectors from FIPS-197</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.BlockCipherTest">
+            basic test class for a block cipher, basically this just exercises the provider, and makes sure we
+            are behaving sensibly, correctness of the implementation is shown in the lightweight test classes.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.BlockCipherTest.FixedSecureRandom">
+            a fake random number generator - we just want to make sure the random numbers
+            aren't random so that we get the same output, while still getting to test the
+            key generation facilities.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.CamelliaTest">
+            <summary>Basic test class for Camellia</summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.CertTest.checkCreation1">
+            we Generate a self signed certificate for the sake of testing - RSA
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.CertTest.checkCreation2">
+            we Generate a self signed certificate for the sake of testing - DSA
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.CertTest.checkCreation3">
+            we Generate a self signed certificate for the sake of testing - ECDSA
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.CertTest.createECCert(System.String,Org.BouncyCastle.Asn1.DerObjectIdentifier)">
+            we Generate a self signed certificate for the sake of testing - SHA224withECDSA
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.CertTest.checkCreation4">
+            we Generate a self signed certificate for the sake of testing - GOST3410
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.CipherStreamTest">
+            <remarks>Check that cipher input/output streams are working correctly</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.CMacTest">
+            CMAC tester - <a href="http://www.nuee.nagoya-u.ac.jp/labs/tiwata/omac/tv/omac1-tv.txt">AES Official Test Vectors</a>.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.DesEdeTest">
+            <remarks>
+            Basic test class for key generation for a DES-EDE block cipher, basically
+            this just exercises the provider, and makes sure we are behaving sensibly,
+            correctness of the implementation is shown in the lightweight test classes.
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.DesEdeTest.FixedSecureRandom">
+            a fake random number generator - we just want to make sure the random numbers
+            aren't random so that we get the same output, while still getting to test the
+            key generation facilities.
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.DigestTest.doAbcTest(System.String,System.String)">
+             Test the hash against a standard value for the string "abc"
+            
+             @param algorithm algorithm to test
+             @param hash expected value
+             @return the test result.
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.DsaTest.TestECDsa239BitPrime">
+            X9.62 - 1998,<br/>
+            J.3.2, Page 155, ECDSA over the field Fp<br/>
+            an example with 239 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.DsaTest.TestECDsa239BitBinary">
+            X9.62 - 1998,<br/>
+            J.2.1, Page 100, ECDSA over the field F2m<br/>
+            an example with 191 bit binary field
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECDsa5Test.TestECDsa239BitPrime">
+            X9.62 - 1998,<br/>
+            J.3.2, Page 155, ECDSA over the field Fp<br/>
+            an example with 239 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECDsa5Test.TestECDsa239BitBinary">
+            X9.62 - 1998,<br/>
+            J.2.1, Page 100, ECDSA over the field F2m<br/>
+            an example with 191 bit binary field
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.ECEncodingTest.m">
+            J.4.7 An Example with m = 304 
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.ECEncodingTest.k1">
+            f = 010000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000807 
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.ECEncodingTest.enc">
+            Base point G (with point compression) 
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECEncodingTest.GenerateSelfSignedSoftECCert(Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair,System.Boolean)">
+            Create a self signed cert for our software emulation
+            
+            @param kp
+                       is the keypair for our certificate
+            @return a self signed cert for our software emulation
+            @throws InvalidKeyException
+                        on error
+            @throws SignatureException
+                        on error
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECNRTest.TestECNR239bitPrime">
+            X9.62 - 1998,<br/>
+            J.3.2, Page 155, ECDSA over the field Fp<br/>
+            an example with 239 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECNRTest.TestECNR192bitPrime">
+            X9.62 - 1998,<br/>
+            Page 104-105, ECDSA over the field Fp<br/>
+            an example with 192 bit prime
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.ECNRTest.TestECNR521bitPrime">
+            SEC 2: Recommended Elliptic Curve Domain Parameters - September 2000,<br/>
+            Page 17-19, Recommended 521-bit Elliptic Curve Domain Parameters over Fp<br/>
+            an ECC example with a 521 bit prime and a 512 bit hash
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.FipsDesTest">
+            <remarks>
+            Basic FIPS test class for a block cipher, just to make sure ECB/CBC/OFB/CFB are behaving
+            correctly. Tests from <a href="http://www.itl.nist.gov/fipspubs/fip81.htm">FIPS 81</a>.
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.Gost28147Test">
+            <remarks>Basic test class for the GOST28147 cipher</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.HMacTest">
+            <remarks>HMAC tester</remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.IesTest">
+            test for ECIES - Elliptic Curve Integrated Encryption Scheme
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.MacTest">
+            <remarks>
+            MAC tester - vectors from
+            <a href="http://www.itl.nist.gov/fipspubs/fip81.htm">FIP 81</a> and
+            <a href="http://www.itl.nist.gov/fipspubs/fip113.htm">FIP 113</a>.
+            </remarks>
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.NoekeonTest">
+            basic test class for SEED
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.PbeTest">
+            test out the various PBE modes, making sure the JCE implementations
+            are compatible woth the light weight ones.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.PkixNameConstraintsTest">
+            <summary>
+            Test class for {@link PkixNameConstraintValidator}.
+            The field testXYZ is the name to test.
+            The field testXYZIsConstraint must be tested if it is permitted and excluded.
+            The field testXYZIsNotConstraint must be tested if it is not permitted and
+            not excluded.
+            Furthermore there are tests for the intersection and union of test names.
+            </summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.PkixNameConstraintsTest.TestConstraints(System.Int32,System.String,System.String[],System.String[],System.String[],System.String[],System.String[][],System.String[])">
+            Tests string based GeneralNames for inclusion or exclusion.
+            
+            @param nameType The {@link GeneralName} type to test.
+            @param testName The name to test.
+            @param testNameIsConstraint The names where <code>testName</code> must
+                       be included and excluded.
+            @param testNameIsNotConstraint The names where <code>testName</code>
+                       must not be excluded and included.
+            @param testNames1 Operand 1 of test names to use for union and
+                       intersection testing.
+            @param testNames2 Operand 2 of test names to use for union and
+                       intersection testing.
+            @param testUnion The union results.
+            @param testInterSection The intersection results.
+            @throws Exception If an unexpected exception occurs.
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.PkixNameConstraintsTest.TestConstraints(System.Int32,System.Byte[],System.Byte[][],System.Byte[][],System.Byte[][],System.Byte[][],System.Byte[][][],System.Byte[][])">
+            Tests byte array based GeneralNames for inclusion or exclusion.
+            
+            @param nameType The {@link GeneralName} type to test.
+            @param testName The name to test.
+            @param testNameIsConstraint The names where <code>testName</code> must
+                       be included and excluded.
+            @param testNameIsNotConstraint The names where <code>testName</code>
+                       must not be excluded and included.
+            @param testNames1 Operand 1 of test names to use for union and
+                       intersection testing.
+            @param testNames2 Operand 2 of test names to use for union and
+                       intersection testing.
+            @param testUnion The union results.
+            @param testInterSection The intersection results.
+            @throws Exception If an unexpected exception occurs.
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.PkixPolicyMappingTest.CreateTrustCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter)">
+            TrustAnchor's Cert
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.PkixPolicyMappingTest.CreateIntmedCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Asn1.Asn1EncodableVector,System.Collections.Hashtable)">
+            intermediate cert
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.PkixPolicyMappingTest.CreateEndEntityCert(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Asn1.Asn1EncodableVector)">
+            endEntity cert
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.PkixTest.rootCertBin">
+                     * C.1  Certificate
+                     * 
+                        * This section contains an annotated hex dump of a 699 byte version 3
+                        * certificate.  The certificate contains the following information:
+                        * (a)  the serial number is 23 (17 hex);
+                        * (b)  the certificate is signed with DSA and the SHA-1 hash algorithm;
+                        * (c)  the issuer's distinguished name is OU=NIST; O=gov; C=US
+                        * (d)  and the subject's distinguished name is OU=NIST; O=gov; C=US
+                        * (e)  the certificate was issued on June 30, 1997 and will expire on
+                        * December 31, 1997;
+                        * (f)  the certificate contains a 1024 bit DSA public key with
+                        * parameters;
+                        * (g)  the certificate contains a subject key identifier extension
+                        * generated using method (1) of section 4.2.1.2; and
+                        * (h)  the certificate is a CA certificate (as indicated through the
+                        * basic constraints extension.)
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.PkixTest.userCert1Bin">
+                     * C.2  Certificate
+                     * 
+                        * This section contains an annotated hex dump of a 730 byte version 3
+                        * certificate.  The certificate contains the following information:
+                        * (a the serial number is 18 (12 hex);
+                        * (b)  the certificate is signed with DSA and the SHA-1 hash algorithm;
+                        * (c)  the issuer's distinguished name is OU=nist; O=gov; C=US
+                        * (d)  and the subject's distinguished name is CN=Tim Polk; OU=nist;
+                        * O=gov; C=US
+                        * (e)  the certificate was valid from July 30, 1997 through December 1,
+                        * 1997;
+                        * (f)  the certificate contains a 1024 bit DSA public key;
+                        * (g)  the certificate is an end entity certificate, as the basic
+                        * constraints extension is not present;
+                        * (h)  the certificate contains an authority key identifier extension
+                        * matching the subject key identifier of the certificate in Appendix
+                        * C.1; and
+                        * (i)  the certificate includes one alternative name - an RFC 822
+                        * address of "wpolk@nist.gov".
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.PkixTest.userCert2Bin">
+            C.3  End Entity Certificate Using RSA
+            
+            This section contains an annotated hex dump of a 654 byte version 3
+            certificate.  The certificate contains the following information:
+            (a)  the serial number is 256;
+            (b)  the certificate is signed with RSA and the SHA-1 hash algorithm;
+            (c)  the issuer's distinguished name is OU=NIST; O=gov; C=US
+            (d)  and the subject's distinguished name is CN=Tim Polk; OU=NIST;
+            O=gov; C=US
+            (e)  the certificate was issued on May 21, 1996 at 09:58:26 and
+            expired on May 21, 1997 at 09:58:26;
+            (f)  the certificate contains a 1024 bit RSA public key;
+            (g)  the certificate is an end entity certificate (not a CA
+            certificate);
+            (h)  the certificate includes an alternative subject name of
+               "&lt;http://www.itl.nist.gov/div893/staff/polk/index.html&gt;" and an
+            alternative issuer name of "&lt;http://www.nist.gov/&gt;" - both are URLs;
+            (i)  the certificate include an authority key identifier extension
+            and a certificate policies extension psecifying the policy OID
+            2.16.840.1.101.3.2.1.48.9; and
+            (j)  the certificate includes a critical key usage extension
+            specifying that the public key is intended for verification of
+            digital signatures.
+        </member>
+        <member name="F:Org.BouncyCastle.Tests.PkixTest.crlBin">
+            This section contains an annotated hex dump of a version 2 CRL with
+            one extension (cRLNumber). The CRL was issued by OU=NIST; O=gov; C=US
+            on August 7, 1997; the next scheduled issuance was September 7, 1997.
+            The CRL includes one revoked certificates: serial number 18 (12 hex),
+            which was revoked on July 31, 1997 due to keyCompromise.  The CRL
+            itself is number 18, and it was signed with DSA and SHA-1.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.Rsa3.RSA3CertTest">
+            Marius Schilder's Bleichenbacher's Forgery Attack Tests
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.RsaTest.MyFixedSecureRandom">
+            a fake random number generator - we just want to make sure the random numbers
+            aren't random so that we get the same output, while still getting to test the
+            key generation facilities.
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.SeedTest">
+            <summary>Basic test class for SEED</summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.SigTest.doTestBadSig(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.Crypto.AsymmetricKeyParameter)">
+            signature with a "forged signature" (sig block not at end of plain text)
+        </member>
+        <member name="T:Org.BouncyCastle.Tests.TestUtilities">
+            Test Utils
+        </member>
+        <member name="M:Org.BouncyCastle.Tests.TestUtilities.GenerateRsaKeyPair">
+            Create a random 1024 bit RSA key pair
+        </member>
+        <member name="T:Org.BouncyCastle.Utilities.Test.NumberParsing">
+            Parsing
         </member>
     </members>
 </doc>

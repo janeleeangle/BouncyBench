@@ -1,0 +1,18 @@
+/BasicOCSPResponse.cs/1.20/Mon Jan 29 06:19:30 2007//
+/CertID.cs/1.19/Mon Jan 29 06:19:30 2007//
+/CertStatus.cs/1.19/Wed Dec  3 07:25:03 2008//
+/CrlID.cs/1.18/Sun Nov 19 13:52:49 2006//
+/OCSPObjectIdentifiers.cs/1.10/Mon Oct 23 12:48:23 2006//
+/OCSPRequest.cs/1.20/Mon Jan 29 06:19:30 2007//
+/OCSPResponse.cs/1.22/Mon Jan 29 06:19:30 2007//
+/OCSPResponseStatus.cs/1.12/Thu Jul 13 13:55:20 2006//
+/Request.cs/1.21/Mon Jan 29 06:19:30 2007//
+/ResponderID.cs/1.16/Mon Apr 18 10:49:08 2011//
+/ResponseBytes.cs/1.19/Mon Jan 29 06:19:30 2007//
+/ResponseData.cs/1.21/Mon Jan 29 06:19:30 2007//
+/RevokedInfo.cs/1.20/Mon Jan 29 06:19:30 2007//
+/ServiceLocator.cs/1.14/Mon Jan 29 06:19:30 2007//
+/Signature.cs/1.21/Mon Jan 29 06:19:30 2007//
+/SingleResponse.cs/1.21/Mon Jan 29 06:19:30 2007//
+/TBSRequest.cs/1.22/Thu Oct 30 04:04:03 2008//
+D

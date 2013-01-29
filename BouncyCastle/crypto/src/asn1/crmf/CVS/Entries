@@ -1,0 +1,23 @@
+/AttributeTypeAndValue.cs/1.1/Sun Mar 20 15:23:40 2011//
+/CertId.cs/1.1/Sun Mar 20 15:23:40 2011//
+/CertReqMessages.cs/1.2/Tue Mar 22 06:17:52 2011//
+/CertReqMsg.cs/1.2/Tue Mar 22 06:17:52 2011//
+/CertRequest.cs/1.1/Sun Mar 20 15:23:40 2011//
+/CertTemplate.cs/1.1/Sun Mar 20 15:23:40 2011//
+/CertTemplateBuilder.cs/1.1/Sun Mar 20 15:23:40 2011//
+/Controls.cs/1.2/Tue Mar 22 06:17:52 2011//
+/CrmfObjectIdentifiers.cs/1.1/Sun Mar 20 15:23:40 2011//
+/EncKeyWithID.cs/1.1/Sun Mar 20 15:23:40 2011//
+/EncryptedKey.cs/1.1/Sun Mar 20 15:23:40 2011//
+/EncryptedValue.cs/1.1/Sun Mar 20 15:23:40 2011//
+/OptionalValidity.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PKIArchiveOptions.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PKIPublicationInfo.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PKMacValue.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PopoPrivKey.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PopoSigningKey.cs/1.1/Sun Mar 20 15:23:41 2011//
+/PopoSigningKeyInput.cs/1.1/Sun Mar 20 15:23:41 2011//
+/ProofOfPossession.cs/1.1/Sun Mar 20 15:23:41 2011//
+/SinglePubInfo.cs/1.1/Sun Mar 20 15:23:41 2011//
+/SubsequentMessage.cs/1.1/Sun Mar 20 15:23:41 2011//
+D

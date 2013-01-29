@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Globalization;
 
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.CryptoPro;
@@ -95,7 +94,7 @@ namespace Org.BouncyCastle.Security
 			if (mechanism == null)
 				throw new System.ArgumentNullException("mechanism");
 
-			mechanism = mechanism.ToUpper(CultureInfo.InvariantCulture);
+			mechanism = Platform.ToUpperInvariant(mechanism);
 			string aliased = (string) algorithms[mechanism];
 
 			if (aliased != null)
@@ -118,7 +117,7 @@ namespace Org.BouncyCastle.Security
         public static IDigest GetDigest(
 			string algorithm)
         {
-			string upper = algorithm.ToUpper(CultureInfo.InvariantCulture);
+			string upper = Platform.ToUpperInvariant(algorithm);
             string mechanism = (string) algorithms[upper];
 
 			if (mechanism == null)

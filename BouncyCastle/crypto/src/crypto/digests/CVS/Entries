@@ -1,0 +1,20 @@
+/GOST3411Digest.cs/1.9/Wed Sep 22 16:33:14 2010//
+/GeneralDigest.cs/1.21/Mon Feb 23 10:17:51 2009//
+/LongDigest.cs/1.26/Tue Nov 17 07:44:52 2009//
+/MD2Digest.cs/1.21/Fri Nov 17 15:40:19 2006//
+/MD4Digest.cs/1.21/Tue Feb  6 14:58:50 2007//
+/MD5Digest.cs/1.20/Sun Mar  4 17:19:56 2012//
+/NullDigest.cs/1.1/Mon Sep 21 08:15:13 2009//
+/RipeMD128Digest.cs/1.4/Fri Nov 17 15:40:19 2006//
+/RipeMD160Digest.cs/1.5/Fri Nov 17 15:40:19 2006//
+/RipeMD256Digest.cs/1.5/Tue Feb  6 14:58:50 2007//
+/RipeMD320Digest.cs/1.5/Tue Feb  6 14:58:50 2007//
+/Sha1Digest.cs/1.9/Tue Nov 17 07:44:52 2009//
+/Sha224Digest.cs/1.7/Tue Nov 24 08:08:25 2009//
+/Sha256Digest.cs/1.8/Tue Nov 24 08:08:25 2009//
+/Sha384Digest.cs/1.4/Tue Nov 17 07:44:52 2009//
+/Sha512Digest.cs/1.4/Tue Nov 17 07:44:52 2009//
+/ShortenedDigest.cs/1.7/Fri Nov 17 15:40:19 2006//
+/TigerDigest.cs/1.23/Fri Nov 17 15:40:19 2006//
+/WhirlpoolDigest.cs/1.6/Fri Nov 17 15:40:20 2006//
+D

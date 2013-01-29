@@ -1,0 +1,110 @@
+/ASN1Generator.cs/1.3/Sat May 24 12:52:15 2008//
+/ASN1OctetStringParser.cs/1.3/Thu Feb  8 09:13:39 2007//
+/ASN1SequenceParser.cs/1.3/Thu Feb  8 09:13:39 2007//
+/ASN1SetParser.cs/1.3/Thu Feb  8 09:13:39 2007//
+/ASN1StreamParser.cs/1.21/Wed Sep  5 13:45:35 2012//
+/ASN1TaggedObjectParser.cs/1.4/Thu Feb  8 09:13:40 2007//
+/Asn1Encodable.cs/1.9/Thu Feb  8 09:13:40 2007//
+/Asn1EncodableVector.cs/1.8/Fri Feb 25 04:36:31 2011//
+/Asn1Exception.cs/1.3/Thu Jan 24 06:53:43 2013//
+/Asn1InputStream.cs/1.38/Wed Sep  5 13:45:35 2012//
+/Asn1Null.cs/1.4/Thu Feb  8 09:13:40 2007//
+/Asn1Object.cs/1.10/Tue Jun  1 05:16:40 2010//
+/Asn1OctetString.cs/1.15/Tue Feb  8 05:35:10 2011//
+/Asn1OutputStream.cs/1.4/Sat Dec  1 07:26:01 2007//
+/Asn1ParsingException.cs/1.2/Thu Jan 24 06:53:43 2013//
+/Asn1Sequence.cs/1.20/Tue Sep 21 06:44:03 2010//
+/Asn1Set.cs/1.24/Tue Feb  8 05:35:10 2011//
+/Asn1TaggedObject.cs/1.21/Wed Dec  3 07:25:03 2008//
+/Asn1Tags.cs/1.1/Sat Jun  3 11:27:29 2006//
+/BERGenerator.cs/1.6/Sat May 24 12:52:15 2008//
+/BEROctetStringGenerator.cs/1.9/Fri Dec  7 10:58:29 2007//
+/BEROctetStringParser.cs/1.5/Tue Jun  1 06:01:59 2010//
+/BERSequenceGenerator.cs/1.7/Sat May 24 12:52:15 2008//
+/BERSequenceParser.cs/1.4/Sat Dec  1 14:24:50 2007//
+/BERSetGenerator.cs/1.2/Sat May 24 12:52:15 2008//
+/BERSetParser.cs/1.5/Sun Dec  9 13:33:21 2007//
+/BERTaggedObjectParser.cs/1.13/Tue May 25 14:44:49 2010//
+/BerApplicationSpecific.cs/1.1/Sat Mar  7 08:15:36 2009//
+/BerApplicationSpecificParser.cs/1.1/Sat Mar  7 08:15:36 2009//
+/BerNull.cs/1.5/Tue Dec  4 13:16:27 2007//
+/BerOctetString.cs/1.12/Sun Sep 19 07:34:49 2010//
+/BerOutputStream.cs/1.6/Sat Dec  1 07:26:01 2007//
+/BerSequence.cs/1.8/Sun May 18 08:57:48 2008//
+/BerSet.cs/1.7/Tue Feb 19 11:19:07 2008//
+/BerTaggedObject.cs/1.12/Sun May 18 08:28:41 2008//
+/ConstructedOctetStream.cs/1.8/Sat Dec  1 14:24:50 2007//
+/DERExternal.cs/1.4/Tue May 25 13:45:26 2010//
+/DERExternalParser.cs/1.1/Sat Oct 31 11:43:35 2009//
+/DERGenerator.cs/1.5/Sat May 24 12:52:15 2008//
+/DEROctetStringParser.cs/1.1/Sat Dec  1 14:24:50 2007//
+/DERSequenceGenerator.cs/1.6/Sat May 24 12:52:15 2008//
+/DERSequenceParser.cs/1.1/Sat Dec  1 14:24:50 2007//
+/DERSetGenerator.cs/1.2/Sat May 24 12:52:15 2008//
+/DERSetParser.cs/1.2/Sun Dec  9 13:33:21 2007//
+/DefiniteLengthInputStream.cs/1.12/Wed Sep  5 13:28:10 2012//
+/DerApplicationSpecific.cs/1.14/Wed Oct  5 12:18:54 2011//
+/DerBMPString.cs/1.7/Tue May 25 07:21:43 2010//
+/DerBitString.cs/1.17/Tue Sep 21 06:44:03 2010//
+/DerBoolean.cs/1.8/Tue May 25 07:21:43 2010//
+/DerEnumerated.cs/1.6/Tue May 25 07:21:43 2010//
+/DerGeneralString.cs/1.9/Wed Feb  2 04:14:58 2011//
+/DerGeneralizedTime.cs/1.15/Wed Apr  6 15:39:03 2011//
+/DerIA5String.cs/1.12/Wed Feb  2 04:14:58 2011//
+/DerInteger.cs/1.6/Mon Apr  5 05:46:07 2010//
+/DerNull.cs/1.8/Fri May 16 08:08:54 2008//
+/DerNumericString.cs/1.12/Wed Feb  2 04:14:58 2011//
+/DerObjectIdentifier.cs/1.21/Wed Sep  5 13:32:16 2012//
+/DerOctetString.cs/1.4/Sat Jun 16 15:21:06 2007//
+/DerOutputStream.cs/1.12/Tue Sep 22 07:46:10 2009//
+/DerPrintableString.cs/1.12/Wed Feb  2 04:14:58 2011//
+/DerSequence.cs/1.10/Sun May 18 08:56:53 2008//
+/DerSet.cs/1.10/Sun May 18 08:56:53 2008//
+/DerStringBase.cs/1.2/Thu Feb  8 09:13:40 2007//
+/DerT61String.cs/1.10/Tue May 25 07:21:43 2010//
+/DerTaggedObject.cs/1.8/Sun May 18 08:28:41 2008//
+/DerUTCTime.cs/1.15/Wed Feb  2 04:14:58 2011//
+/DerUTF8String.cs/1.11/Tue May 25 06:54:07 2010//
+/DerUniversalString.cs/1.7/Tue May 25 07:21:43 2010//
+/DerUnknownTag.cs/1.7/Wed Jun 11 16:40:39 2008//
+/DerVisibleString.cs/1.7/Wed Feb  2 04:14:58 2011//
+/IAsn1ApplicationSpecificParser.cs/1.1/Sat Mar  7 08:15:36 2009//
+/IAsn1Choice.cs/1.1/Fri Dec  5 01:30:25 2008//
+/IAsn1Convertible.cs/1.2/Thu Feb  8 09:13:41 2007//
+/IAsn1String.cs/1.2/Thu Feb  8 09:13:41 2007//
+/IndefiniteLengthInputStream.cs/1.10/Fri Apr 27 14:41:28 2012//
+/LazyASN1InputStream.cs/1.3/Tue Feb 19 11:35:04 2008//
+/LazyDERSequence.cs/1.3/Fri Apr 27 14:42:24 2012//
+/LazyDERSet.cs/1.3/Fri Apr 27 14:42:24 2012//
+/LimitedInputStream.cs/1.7/Tue May 25 14:44:49 2010//
+/OidTokenizer.cs/1.3/Thu Feb  8 09:13:41 2007//
+D/bc////
+D/cmp////
+D/cms////
+D/crmf////
+D/cryptopro////
+D/eac////
+D/esf////
+D/ess////
+D/gnu////
+D/iana////
+D/icao////
+D/isismtt////
+D/kisa////
+D/microsoft////
+D/misc////
+D/mozilla////
+D/nist////
+D/ntt////
+D/ocsp////
+D/oiw////
+D/pkcs////
+D/sec////
+D/smime////
+D/teletrust////
+D/test////
+D/tsp////
+D/util////
+D/x500////
+D/x509////
+D/x9////

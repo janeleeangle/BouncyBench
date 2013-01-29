@@ -5,8 +5,9 @@
 	<property name="CVSROOT"
 		value=":pserver:anonymous@cvs.bouncycastle.org:/home/users/bouncy/cvsroot" />
 	<property name="sourcecontrol.usesharpcvslib" value="false" />
-	<property name="CVSCMD" value="C:/Program Files/CVSNT/cvs.exe" />
-	<!--<property name="CVSCMD" value="/usr/bin/cvs" />-->
+	<property name="CVSCMD" value="C:/Program Files (x86)/CVSNT/cvs.exe" />
+  <!--<property name="CVSCMD" value="C:/Program Files/CVSNT/cvs.exe" />-->
+  <!--<property name="CVSCMD" value="/usr/bin/cvs" />-->
 
 	<property name="api-debugpath" value="./api/bin/debug" />
 	<property name="api-releasepath" value="./api/bin/release" />

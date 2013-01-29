@@ -59,9 +59,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BouncyCastle\crypto\BouncyCastle.Crypto.csproj">
+    <ProjectReference Include="..\BouncyCastle\crypto\crypto.csproj">
       <Project>{38872a5f-e87e-4fad-b109-8eb7b2e6a4a0}</Project>
-      <Name>BouncyCastle.Crypto</Name>
+      <Name>crypto</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

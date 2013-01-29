@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Globalization;
 
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Iana;
@@ -41,6 +40,7 @@ namespace Org.BouncyCastle.Security
 
 			algorithms["DES"] = "DESMAC";
 			algorithms["DES/CFB8"] = "DESMAC/CFB8";
+			algorithms["DES64"] = "DESMAC64";
 			algorithms["DESEDE"] = "DESEDEMAC";
 			algorithms[PkcsObjectIdentifiers.DesEde3Cbc.Id] = "DESEDEMAC";
 			algorithms["DESEDE/CFB8"] = "DESEDEMAC/CFB8";
@@ -78,7 +78,7 @@ namespace Org.BouncyCastle.Security
 //		public static DerObjectIdentifier GetObjectIdentifier(
 //			string mechanism)
 //		{
-//			mechanism = (string) algorithms[mechanism.ToUpper(CultureInfo.InvariantCulture)];
+//			mechanism = (string) algorithms[Platform.ToUpperInvariant(mechanism)];
 //
 //			if (mechanism != null)
 //			{
@@ -102,9 +102,9 @@ namespace Org.BouncyCastle.Security
 		public static IMac GetMac(
 			string algorithm)
 		{
-			string upper = algorithm.ToUpper(CultureInfo.InvariantCulture);
+			string upper = Platform.ToUpperInvariant(algorithm);
 
-			string mechanism = (string) algorithms[upper];
+            string mechanism = (string) algorithms[upper];
 
 			if (mechanism == null)
 			{
@@ -142,6 +142,10 @@ namespace Org.BouncyCastle.Security
 			if (mechanism == "DESMAC/CFB8")
 			{
 				return new CfbBlockCipherMac(new DesEngine());
+			}
+			if (mechanism == "DESMAC64")
+			{
+				return new CbcBlockCipherMac(new DesEngine(), 64);
 			}
 			if (mechanism == "DESEDECMAC")
 			{

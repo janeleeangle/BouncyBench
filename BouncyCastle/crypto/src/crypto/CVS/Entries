@@ -1,0 +1,47 @@
+/AsymmetricCipherKeyPair.cs/1.10/Wed Nov 29 09:35:25 2006//
+/AsymmetricKeyParameter.cs/1.14/Sat Apr  9 10:15:12 2011//
+/BufferedAeadBlockCipher.cs/1.5/Tue Dec 11 13:44:13 2012//
+/BufferedAsymmetricBlockCipher.cs/1.33/Tue Jun 12 09:57:45 2007//
+/BufferedBlockCipher.cs/1.44/Thu Jan 24 04:50:48 2013//
+/BufferedCipherBase.cs/1.4/Sat May 10 09:35:40 2008//
+/BufferedIesCipher.cs/1.4/Sat Jun 30 17:40:35 2007//
+/BufferedStreamCipher.cs/1.5/Mon Nov 26 16:14:58 2007//
+/CipherKeyGenerator.cs/1.16/Mon Nov 26 13:36:33 2007//
+/CryptoException.cs/1.14/Thu Jan 24 06:53:43 2013//
+/DataLengthException.cs/1.14/Thu Jan 24 06:53:43 2013//
+/IAsymmetricBlockCipher.cs/1.7/Fri Nov 17 15:40:19 2006//
+/IAsymmetricCipherKeyPairGenerator.cs/1.1/Tue Mar 21 00:52:54 2006//
+/IBasicAgreement.cs/1.2/Fri Nov 17 15:40:19 2006//
+/IBlockCipher.cs/1.7/Sat Oct 28 10:25:49 2006//
+/IBufferedCipher.cs/1.8/Tue Jun 12 09:57:45 2007//
+/ICipherParameters.cs/1.1/Tue Mar 21 00:52:54 2006//
+/IDSA.cs/1.2/Thu Nov 16 14:20:27 2006//
+/IDerivationFunction.cs/1.2/Tue Mar 21 13:28:28 2006//
+/IDerivationParameters.cs/1.1/Tue Mar 21 00:52:54 2006//
+/IDigest.cs/1.5/Fri Jul 14 07:27:01 2006//
+/IMac.cs/1.6/Tue Feb  6 14:58:50 2007//
+/ISigner.cs/1.4/Fri Nov 17 15:40:19 2006//
+/ISignerWithRecovery.cs/1.3/Thu Jan 27 04:27:03 2011//
+/IStreamCipher.cs/1.5/Sat Mar 31 09:01:34 2007//
+/IWrapper.cs/1.4/Tue Oct 31 09:37:07 2006//
+/InvalidCipherTextException.cs/1.12/Thu Jan 24 06:53:43 2013//
+/KeyGenerationParameters.cs/1.11/Sun Nov 26 12:03:50 2006//
+/MaxBytesExceededException.cs/1.2/Thu Jan 24 06:53:43 2013//
+/PbeParametersGenerator.cs/1.12/Tue Jul  5 07:35:47 2011//
+/StreamBlockCipher.cs/1.18/Tue Nov 27 08:41:53 2007//
+D/agreement////
+D/digests////
+D/encodings////
+D/engines////
+D/examples////
+D/generators////
+D/io////
+D/macs////
+D/modes////
+D/paddings////
+D/parameters////
+D/prng////
+D/signers////
+D/test////
+D/tls////
+D/util////

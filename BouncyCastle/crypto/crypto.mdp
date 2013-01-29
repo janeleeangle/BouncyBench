@@ -8,13 +8,13 @@
       <Output directory="bin/Debug/" assembly="crypto" assemblyKeyFile="." />
       <Build debugmode="True" target="Library" />
       <Execution consolepause="True" runwithwarnings="False" runtime="MsNet" clr-version="Net_1_1" />
-      <CodeGeneration langversion="ISO_1" compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="BC_BUILD_MONODEVELOP;INCLUDE_IDEA;NET_1_1" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="BC_BUILD_MONODEVELOP;INCLUDE_IDEA;NET_1_1" generatexmldocumentation="False" langversion="ISO_1" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Release/" assembly="crypto" />
       <Build debugmode="False" target="Library" />
       <Execution consolepause="True" runwithwarnings="False" runtime="MsNet" clr-version="Net_1_1" />
-      <CodeGeneration langversion="ISO_1" compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="BC_BUILD_MONODEVELOP;INCLUDE_IDEA;NET_1_1" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="BC_BUILD_MONODEVELOP;INCLUDE_IDEA;NET_1_1" generatexmldocumentation="False" langversion="ISO_1" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
@@ -714,6 +714,8 @@
     <File subtype="Code" buildaction="Compile" name="src/x509/X509AttrCertParser.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSAttributeTableGenerationException.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSAttributeTableGenerator.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/CMSAuthEnvelopedData.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/CMSAuthEnvelopedGenerator.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSCompressedData.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSCompressedDataGenerator.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSCompressedDataParser.cs" />
@@ -739,6 +741,7 @@
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSSignedDataStreamGenerator.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSSignedGenerator.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSSignedHelper.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/CMSStreamException.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSTypedStream.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/CMSUtils.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/DefaultSignedAttributeTableGenerator.cs" />
@@ -748,6 +751,9 @@
     <File subtype="Code" buildaction="Compile" name="src/cms/KeyTransRecipientInformation.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/MacOutputStream.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/NullOutputStream.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/OriginatorId.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/OriginatorInfoGenerator.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/cms/OriginatorInformation.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/PasswordRecipientInformation.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/PKCS5Scheme2PBEKey.cs" />
     <File subtype="Code" buildaction="Compile" name="src/cms/RecipientId.cs" />
@@ -2094,7 +2100,6 @@
     <File subtype="Code" buildaction="Nothing" name="test/data/rfc4134/rfc4134.txt" />
     <File subtype="Code" buildaction="Compile" name="test/src/cms/test/Rfc4134Test.cs" />
     <File subtype="Code" buildaction="Compile" name="src/util/io/StreamOverflowException.cs" />
-    <File subtype="Code" buildaction="Compile" name="src/cms/CMSStreamException.cs" />
     <File subtype="Code" buildaction="Compile" name="test/src/pkcs/examples/PKCS12Example.cs" />
     <File subtype="Code" buildaction="Compile" name="src/asn1/DERExternal.cs" />
     <File subtype="Code" buildaction="Compile" name="src/asn1/DERExternalParser.cs" />
@@ -2103,9 +2108,6 @@
     <File subtype="Code" buildaction="Compile" name="src/crypto/agreement/ECMqvBasicAgreement.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/agreement/ECMqvWithKdfBasicAgreement.cs" />
     <File subtype="Code" buildaction="Compile" name="test/src/test/MqvTest.cs" />
-    <File subtype="Code" buildaction="Compile" name="src/cms/OriginatorId.cs" />
-    <File subtype="Code" buildaction="Compile" name="src/cms/CMSAuthEnvelopedData.cs" />
-    <File subtype="Code" buildaction="Compile" name="src/cms/CMSAuthEnvelopedGenerator.cs" />
     <File subtype="Code" buildaction="Compile" name="src/asn1/bc/BCObjectIdentifiers.cs" />
     <File subtype="Code" buildaction="Compile" name="test/src/asn1/test/EssCertIDv2UnitTest.cs" />
     <File subtype="Code" buildaction="Compile" name="src/pkcs/Pkcs12Utilities.cs" />
@@ -2121,6 +2123,7 @@
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsNullCipher.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/DefaultTlsClient.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsBlockCipher.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsStreamCipher.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsDHKeyExchange.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsSrpKeyExchange.cs" />
     <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsRsaKeyExchange.cs" />
@@ -2268,6 +2271,16 @@
     <File subtype="Code" buildaction="Compile" name="src/asn1/cmp/RevRepContent.cs" />
     <File subtype="Code" buildaction="Compile" name="src/asn1/cmp/RevReqContent.cs" />
     <File subtype="Code" buildaction="Compile" name="src/asn1/cmp/RevRepContentBuilder.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsDHUtilities.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsRsaUtilities.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsPskIdentity.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/TlsPskKeyExchange.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/PskTlsClient.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/crypto/tls/Ssl3Mac.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/bcpg/sig/RevocationKey.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/bcpg/sig/RevocationReason.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/bcpg/sig/RevocationReasonTags.cs" />
+    <File subtype="Code" buildaction="Compile" name="src/bcpg/sig/RevocationKeyTags.cs" />
   </Contents>
   <References>
     <ProjectReference type="Assembly" localcopy="True" refto="test/lib/nunit.core.dll" />

@@ -32,6 +32,7 @@ namespace Org.BouncyCastle.Cms
 			input.Close();
 		}
 
+		[Obsolete]
 		public object GetContent()
 		{
 			return GetInputStream();

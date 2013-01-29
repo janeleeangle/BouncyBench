@@ -50,7 +50,9 @@ namespace Org.BouncyCastle.Utilities
 			FieldInfo[] fields = enumType.GetFields(BindingFlags.Static | BindingFlags.Public);
 			foreach (FieldInfo field in fields)
 			{
-				result.Add(field.GetValue(null));
+                // Note: Argument to GetValue() ignored since the fields are static,
+                //     but Silverlight for Windows Phone throws exception if we pass null
+				result.Add(field.GetValue(enumType));
 			}
             object[] arr = new object[result.Count];
             result.CopyTo(arr, 0);
