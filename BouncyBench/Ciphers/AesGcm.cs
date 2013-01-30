@@ -5,9 +5,10 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Modes.Gcm;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Modes.Gcm;
+using Org.BouncyCastle.Utilities;
 
 namespace CryptoTests.Ciphers
 {
@@ -17,11 +18,16 @@ namespace CryptoTests.Ciphers
 
         private readonly Random Random = new Random();
 
+        // TODO Make the expected input length available at construction, or perhaps allow changing multiplier on the fly
+        private readonly GcmBlockCipher cipher = new GcmBlockCipher(new AesFastEngine(), new Tables8kGcmMultiplier());
+
         // exact 96 is best for speed, no less, no more (larger kicks in extra hash cycles)
         // see The Galois/Counter Mode of Operation (GCM) paper by McGrew
         private int IVBitSize = 96;
         private byte[] aesKey;
         private byte[] IV;
+
+        private KeyParameter keyParameter;
 
         public void Init(byte[] aesKey)
         {
@@ -42,7 +48,12 @@ namespace CryptoTests.Ciphers
             // Key
             if ((aesKey.Length != 16) && (aesKey.Length != 24) && (aesKey.Length != 32))
                 throw new ArgumentException("Key length not 128/192/256 bits.");
-            this.aesKey = aesKey;
+
+            if (!Arrays.AreEqual(aesKey, this.aesKey))
+            {
+                this.aesKey = aesKey;
+                this.keyParameter = new KeyParameter(aesKey);
+            }
 
             // IV
             if (IV != null)
@@ -92,9 +103,9 @@ namespace CryptoTests.Ciphers
                 Random.NextBytes(this.IV);
             }
 
-            IGcmMultiplier multiplier = ChooseMultiplier(plainBytes.LongLength);
-            var cipher = new GcmBlockCipher(new AesFastEngine(), multiplier);
-            var parameters = new AeadParameters(new KeyParameter(aesKey), TagBitSize, IV, AddtnlAuthData);
+            var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
+            keyParameter = null;
+
             cipher.Init(true, parameters);
 
             //Generate Cipher Text With Auth Tag
@@ -156,11 +167,10 @@ namespace CryptoTests.Ciphers
                     // Read out IV
                     var IV = cipherReader.ReadBytes(IVBitSize / 8);
 
-                    // Select appropriate multiplier based on size
-                    IGcmMultiplier multiplier = ChooseMultiplier(cipherBytes.LongLength);
-                    var cipher = new GcmBlockCipher(new AesFastEngine(), multiplier);
                     // Format AEAD parameters 
-                    var parameters = new AeadParameters(new KeyParameter(aesKey), TagBitSize, IV, AddtnlAuthData);
+                    var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
+                    keyParameter = null;
+
                     cipher.Init(false, parameters);
 
                     // Read in cipher text, create output buffer

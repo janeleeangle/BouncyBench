@@ -21,11 +21,11 @@ namespace CryptoTests.Tests
             TestResult tr = new TestResult();
 
             sw.Start();
+            encCipher = new T();
             for (int i = 0; i < iterations; i++)
             {                
                 // Init cipher here for more realistic iteration benchmark
                 // of new IV per data to encrypt/decrypt
-                encCipher = new T();
                 encCipher.Init(key);
 
                 // ENCRYPT
