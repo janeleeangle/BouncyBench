@@ -57,7 +57,9 @@ namespace Org.BouncyCastle.Crypto.Modes
 	        if (m == null)
 	        {
 	            // TODO Consider a static property specifying default multiplier
-	            m = new Tables8kGcmMultiplier();
+                //m = new BasicGcmMultiplier();
+                m = new Tables8kGcmMultiplier();
+                //m = new Tables64kGcmMultiplier();
 	        }
 
 			this.cipher = c;

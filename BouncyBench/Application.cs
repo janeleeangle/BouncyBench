@@ -46,6 +46,9 @@ namespace CryptoTests
                     case 'c':
                         ChangeTestParams();
                         break;
+                    case 's':
+                        TestSizes();
+                        break;
                     default:
                         Console.WriteLine("Unknown input");
                         break;
@@ -82,6 +85,7 @@ namespace CryptoTests
         {
             Console.WriteLine("R - Rerun tests");
             Console.WriteLine("C - Change size({0}) and iterations({1})", size, iterations);
+            Console.WriteLine("S - Size testing different input lengths");
             Console.WriteLine("Q - Quit");
             string input = Console.ReadLine().Replace(" ","").ToLowerInvariant();
             if (input.Length > 0)
@@ -115,20 +119,22 @@ namespace CryptoTests
             ///////////////////////////////////////////////
             // AES
             ///////////////////////////////////////////////
-             new TestEncryptor<Aes>().RunTest(key128, null, clearText, iter);
-             new TestEncryptor<Aes>().RunTest(key256, null, clearText, iter);
+            new TestEncryptor<Aes>().RunTest(key128, null, clearText, iter);
+            new TestEncryptor<Aes>().RunTest(key256, null, clearText, iter);
 
             ///////////////////////////////////////////////
             // AES + HMAC
             ///////////////////////////////////////////////
-             new TestEncryptor<AesHmac>().RunTest(key128, null, clearText, iter);
-             new TestEncryptor<AesHmac>().RunTest(key256, null, clearText, iter);
+            new TestEncryptor<AesHmac>().RunTest(key128, null, clearText, iter);
+            new TestEncryptor<AesHmac>().RunTest(key256, null, clearText, iter);
 
             /////////////////////////////////////////////////////////////
             // Bouncy Castle regular ciphers 
-            ////////////////////////////////////////////////////////////
-            new TestEncryptorBC<AesFastEngine>().RunTest(key128, IV, clearText, iter);
+            ////////////////////////////////////////////////////////////            
+            new TestEncryptorBC<AesFastEngine>().RunTest(key128, IV, clearText, iter); 
             new TestEncryptorBC<AesFastEngine>().RunTest(key256, IV, clearText, iter);
+            new TestEncryptorBC<RC6Engine>().RunTest(key256, IV, clearText, iter); 
+            new TestEncryptorBC<TwofishEngine>().RunTest(key256, IV, clearText, iter);            
 
             /////////////////////////////////////////////////////////////
             // Bouncy Castle authenticated encryption ciphers
@@ -147,6 +153,32 @@ namespace CryptoTests
             new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, iter);
 
             Console.WriteLine();
+        }
+
+        public void TestSizes()
+        {
+            Console.WriteLine("Benchmark test is SIZE. Encrypt=>Decrypt");
+            Console.WriteLine();
+            TestResult.PrintHeader();
+
+            Random rng = new Random();
+            var key256 = new byte[32];
+            var IV = new byte[16];
+
+            rng.NextBytes(key256);
+            rng.NextBytes(IV);
+
+            int[] sizes = { 1, 10, 25, 50, 100, 250, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000 };
+
+            foreach (int currentSize in sizes)
+            {
+                var clearText = new byte[currentSize];
+                for (long i = 0; i < clearText.LongLength; i++)
+                {
+                    clearText[i] = Convert.ToByte(i % 256);
+                }
+                new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, 1);
+            }
         }
     }
 }
