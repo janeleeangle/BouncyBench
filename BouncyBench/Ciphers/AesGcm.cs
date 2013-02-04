@@ -36,11 +36,10 @@ namespace CryptoTests.Ciphers
 
         public string GetName()
         {
-            // We dynamically select GF(2^128) multiplier, so we get a fancy pants name!
             if (aesKey == null)
-                return "AES-GCM-DynMul";
+                return "AES-GCM";
             else
-                return String.Format("AES{0}-GCM-DynMul", aesKey.Length * 8);
+                return String.Format("AES{0}-GCM", aesKey.Length * 8);
         }
 
         public void Init(byte[] aesKey, byte[] IV = null)
@@ -202,15 +201,16 @@ namespace CryptoTests.Ciphers
 
         private IGcmMultiplier ChooseMultiplier(long p)
         {
-            // Based on some quick tests in 01/29/2013
-            if (p < 30)
-                return new BasicGcmMultiplier();
-            if (p > 500000)
-                return new Tables64kGcmMultiplier();
+            // Peter's latest update on  makes this pointless
+            // as 8k performance is very very good
+            //// Based on some quick tests in 01/29/2013
+            //if (p < 30)
+            //    return new BasicGcmMultiplier();
+            //if (p > 500000)
+            //    return new Tables64kGcmMultiplier();
 
             // this is a great default otherwise
             return new Tables8kGcmMultiplier();
         }
-
     }
 }

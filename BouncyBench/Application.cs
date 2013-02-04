@@ -139,16 +139,6 @@ namespace CryptoTests
             /////////////////////////////////////////////////////////////
             // Bouncy Castle authenticated encryption ciphers
             ////////////////////////////////////////////////////////////
-            // Performance knobs:
-            // 1. inside BouncyCastle/Crypto/Modes/GCMBlockCipher.cs, around line 58:
-            //    m = new BasicGcmMultiplier();   <== fastest for small data (eg: 20 bytes)
-            //    m = new Tables8kGcmMultiplier(); <== rather slow. Too many Array copies internally?
-            //    m = new Tables64kGcmMultiplier(); <== slowest for small data / setup time overhead?
-            // 2. inside BouncyBench/Ciphers/AesGcm.cs
-            //    >> impact seen only when size < 10 bytes or so <<
-            //    replace SecureRandom Random = new SecureRandom();  <== slow
-            //    with    Random Random = new Random();             <== fast
-            //    since GCM needs non-repeating IVs/counter, NOT crypto random IVs (like AES-CBC does) 
             new TestEncryptor<AesGcm>().RunTest(key128, null, clearText, iter);            
             new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, iter);
 
