@@ -30,7 +30,9 @@ namespace CryptoTests.Ciphers
             this.aesKey = cryptoKey;
         }
 
-        public byte[] Encrypt(byte[] secretMessage, byte[] iv = null, byte[] nonSecretPayload = null)
+        // encrypted = LSByte [ AddtnlAuthData || IV || cipher ] MSByte
+        //             WARNING: AddtnlAuthData is NOT authenticated in plain AES!!
+        public byte[] Encrypt(byte[] secretMessage, byte[] iv = null, byte[] AddtnlAuthData = null)
         {
             if (iv != null)
                 throw new Exception("Aes generates IV internally, set IV to null");
@@ -39,7 +41,7 @@ namespace CryptoTests.Ciphers
                 throw new ArgumentException("Secret Message Required!", "secretMessage");
 
             //non-secret payload optional
-            nonSecretPayload = nonSecretPayload ?? new byte[] { };
+            AddtnlAuthData = AddtnlAuthData ?? new byte[] { };
 
             byte[] cipherText;
             byte[] IV;
@@ -77,7 +79,7 @@ namespace CryptoTests.Ciphers
                 using (var binaryWriter = new BinaryWriter(encryptedStream))
                 {
                     //Prepend non-secret payload if any
-                    binaryWriter.Write(nonSecretPayload);
+                    binaryWriter.Write(AddtnlAuthData);
                     //Prepend IV
                     binaryWriter.Write(IV);
                     //Write Ciphertext
@@ -88,7 +90,7 @@ namespace CryptoTests.Ciphers
             }
         }
 
-        public byte[] Decrypt(byte[] message, int IVLength=0, int nonSecretPayloadLength = 0)
+        public byte[] Decrypt(byte[] message, int IVLength=0, int AddtnlAuthDataLength = 0)
         {
             if (IVLength != 0)
                 throw new Exception("Aes knows IVLength internally, remove or set IVLength to 0 in call");
@@ -108,7 +110,7 @@ namespace CryptoTests.Ciphers
 
                 //Grab IV from message
                 var iv = new byte[ivLength];
-                Array.Copy(message, nonSecretPayloadLength, iv, 0, iv.Length);
+                Array.Copy(message, AddtnlAuthDataLength, iv, 0, iv.Length);
 
                 using (var decrypter = aes.CreateDecryptor(aesKey, iv))
                 using (var plainTextStream = new MemoryStream())
@@ -119,8 +121,8 @@ namespace CryptoTests.Ciphers
                         //Decrypt Cipher Text from Message
                         binaryWriter.Write(
                             message,
-                            nonSecretPayloadLength + iv.Length,
-                            message.Length - nonSecretPayloadLength - iv.Length
+                            AddtnlAuthDataLength + iv.Length,
+                            message.Length - AddtnlAuthDataLength - iv.Length
                         );
                     }
                     //Return Plain Text

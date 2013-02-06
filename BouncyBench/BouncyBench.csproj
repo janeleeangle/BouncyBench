@@ -54,6 +54,7 @@
     <Compile Include="Tests\TestEncryptorBC.cs" />
     <Compile Include="Tests\TestEncryptor.cs" />
     <Compile Include="Tests\TestResult.cs" />
+    <Compile Include="Utility\ByteUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

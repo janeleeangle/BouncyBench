@@ -32,40 +32,40 @@ namespace CryptoTests.Ciphers
         {
 
             this.cryptoKey = cryptoKey;
-            this.authKey = cryptoKey; // we're using the same key for the hmac tag
+            this.authKey = cryptoKey; // we're using the same key for the hmac hmac
             aes = new CryptoTests.Ciphers.Aes();
             aes.Init(cryptoKey);
         }
 
-        public byte[] Encrypt(byte[] secretMessage, byte[] iv = null, byte[] nonSecretPayload = null)
+        // encrypted = LSByte [ AddtnlAuthData || IV || cipher || hmac ] MSByte
+        public byte[] Encrypt(byte[] secretMessage, byte[] iv = null, byte[] AddtnlAuthData = null)
         {
             if (iv != null)
                 throw new Exception("AesHmac generates IV internally, set IV to null in Init");
 
-            // Decrypt the rest of the enc message
-            var ivCipherText = aes.Encrypt(secretMessage);
-
-
             //Assemble encrypted message and add authentication
-            using (var hmac = new HMACSHA256(authKey))
+            using (var hmacSha256 = new HMACSHA256(authKey))
             using (var encryptedStream = new MemoryStream())
             {
                 using (var binaryWriter = new BinaryWriter(encryptedStream))
                 {
+                    // Encrypt message using AES
+                    var ivCipherText = aes.Encrypt(secretMessage, iv, AddtnlAuthData);
+
                     //Write IV + Ciphertext
                     binaryWriter.Write(ivCipherText);
                     binaryWriter.Flush();
 
                     //Authenticate all data
-                    var tag = hmac.ComputeHash(ivCipherText);
-                    //Postpend tag
-                    binaryWriter.Write(tag);
+                    var hmac = hmacSha256.ComputeHash(ivCipherText);
+                    //Postpend hmac
+                    binaryWriter.Write(hmac);
                 }
                 return encryptedStream.ToArray();
             }
         }
 
-        public byte[] Decrypt(byte[] encryptedMessage, int IVLength=0, int nonSecretPayloadLength=0)
+        public byte[] Decrypt(byte[] encryptedMessage, int IVLength=0, int AddtnlAuthDataLength=0)
         {
             if (IVLength != 0)
                 throw new Exception("Aes knows IVLength internally, remove or set IVLength to 0 in call");
@@ -75,32 +75,30 @@ namespace CryptoTests.Ciphers
 
             using (var hmac = new HMACSHA256(authKey))
             {
-                var sentTag = new byte[hmac.HashSize / 8];
-                //Calculate Tag
-                var calcTag = hmac.ComputeHash(encryptedMessage, 0, encryptedMessage.Length - sentTag.Length);
-                var ivLength = (BlockBitSize / 8);
-
                 //if message length is to small just return null
-                if (encryptedMessage.Length < sentTag.Length + nonSecretPayloadLength + ivLength)
+                var ivLength = (BlockBitSize / 8);
+                var sentHmac = new byte[hmac.HashSize / 8];
+                if (encryptedMessage.Length < sentHmac.Length + AddtnlAuthDataLength + ivLength)
                     return null;
 
-                //Grab Sent Tag
-                Array.Copy(encryptedMessage, encryptedMessage.Length - sentTag.Length, sentTag, 0, sentTag.Length);
-
-                //Compare Tag with Constant time comparison
+                // 1. Authenticate data
+                var calcTag = hmac.ComputeHash(encryptedMessage, 0, encryptedMessage.Length - sentHmac.Length);
+                //    Grab Sent hmac
+                Array.Copy(encryptedMessage, encryptedMessage.Length - sentHmac.Length, sentHmac, 0, sentHmac.Length);
+                //    Compare hmac with Constant time comparison
                 var auth = true;
-                for (var i = 0; i < sentTag.Length; i++)
-                    auth = auth & sentTag[i] == calcTag[i]; //uses non-shortcircuit and (&)
-
-                //if message doesn't authenticate return null
+                for (var i = 0; i < sentHmac.Length; i++)
+                    auth = auth & sentHmac[i] == calcTag[i]; //uses non-shortcircuit and (&)
+                //    if message doesn't authenticate return null
                 if (!auth)
                     return null;
 
-                // Decrypt the rest of the enc message
-                long msgIvLen = encryptedMessage.Length - nonSecretPayloadLength - sentTag.Length;
+                // 2. Decrypt encrypted message after stripping off HMAC
+                // encrypted = LSByte [ AddtnlAuthData || IV || cipher || hmac ] MSByte
+                long msgIvLen = encryptedMessage.Length - sentHmac.Length;
                 var encMsgNoHmac = new byte[msgIvLen];
                 Array.Copy(encryptedMessage, encMsgNoHmac, msgIvLen);
-                return aes.Decrypt(encMsgNoHmac);
+                return aes.Decrypt(encMsgNoHmac, 0, AddtnlAuthDataLength);
             }
         }
     }

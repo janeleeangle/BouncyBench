@@ -9,6 +9,6 @@ namespace CryptoTests.Tests
 {
     public abstract class TestEncryptorBase
     {
-        public abstract TestResult RunTest(byte[] key, byte[] IV, byte[] clearInput, int iterations = 1);
+        public abstract TestResult RunTest(byte[] key, byte[] IV, byte[] clearInput, byte[] AddtnlAuthData, int iterations = 1);
     }
 }

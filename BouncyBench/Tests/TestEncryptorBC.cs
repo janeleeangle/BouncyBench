@@ -13,37 +13,45 @@ namespace CryptoTests.Tests
     {
         private EncryptorBC<T> encCipher;
 
-        public override TestResult RunTest(byte[] key, byte[] IV, byte[] clearInput, int iterations = 1)
+        public override TestResult RunTest(byte[] key, byte[] IV, byte[] clearInput, byte[] AddtnlAuthData, int iterations = 1)
         {
+            int AddtnlAuthDataLength = 0;
+
+            if (AddtnlAuthData != null)
+                AddtnlAuthDataLength = AddtnlAuthData.Length;
+
+
             Stopwatch sw = new Stopwatch();
             byte[] encrypted = { };
             byte[] clearTextBack;
             TestResult tr = new TestResult();
 
             sw.Start();
+            encCipher = new EncryptorBC<T>();
+
             for (int i = 0; i < iterations; i++)
             {
                 // Init cipher here for more realistic iteration benchmark
                 // of new IV per data to encrypt/decrypt
-                encCipher = new EncryptorBC<T>();
                 encCipher.Init(key);
 
                 // ENCRYPT
-                encrypted = encCipher.Encrypt(clearInput, IV);
+                encrypted = encCipher.Encrypt(clearInput, IV, AddtnlAuthData);
 
                 //DECRYPT
-                clearTextBack = encCipher.Decrypt(encrypted, IV.Length);
+                clearTextBack = encCipher.Decrypt(encrypted, IV.Length, AddtnlAuthDataLength);
 
                 if (!clearTextBack.SequenceEqual(clearInput))
                     tr.passed = false;
             }
             sw.Stop();
 
-            tr.overhead = ((encrypted.Length - clearInput.Length) / (float)clearInput.Length);
+            tr.overhead = ((encrypted.Length - clearInput.Length - AddtnlAuthDataLength) / (float)(clearInput.Length + AddtnlAuthDataLength));
             tr.name = encCipher.GetName();
             tr.time = new TimeSpan(sw.Elapsed.Ticks / iterations); // get average 
             tr.plainSizeBytes = clearInput.Length;
             tr.encryptSizeBytes = encrypted.Length;
+            tr.AADSizeBytes = AddtnlAuthDataLength;
 
             TestResult.PrintResult(tr);
 

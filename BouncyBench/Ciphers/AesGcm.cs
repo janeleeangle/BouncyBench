@@ -26,23 +26,22 @@ namespace CryptoTests.Ciphers
         private int IVBitSize = 96;
         private byte[] aesKey;
         private byte[] IV;
-
         private KeyParameter keyParameter;
 
+        public AesGcm() { }
+
+        public AesGcm(byte[] aesKey, byte[] IV=null)
+        {
+            this.Init(aesKey, IV);
+        }
+        
+        // To maintain an interface compatible with BouncyBench
         public void Init(byte[] aesKey)
         {
             this.Init(aesKey, null);
         }
 
-        public string GetName()
-        {
-            if (aesKey == null)
-                return "AES-GCM";
-            else
-                return String.Format("AES{0}-GCM", aesKey.Length * 8);
-        }
-
-        public void Init(byte[] aesKey, byte[] IV = null)
+        public void Init(byte[] aesKey, byte[] IV)
         {
             // Key
             if ((aesKey.Length != 16) && (aesKey.Length != 24) && (aesKey.Length != 32))
@@ -87,6 +86,7 @@ namespace CryptoTests.Ciphers
             return Convert.ToBase64String(cipherBytes);
         }
 
+        // encrypted = LSByte [AddtnlAuthData || IV || cipherOnly || hmac ] MSByte
         public byte[] Encrypt(byte[] plainBytes, byte[] AddtnlAuthData)
         {
             if (plainBytes == null)
@@ -101,16 +101,34 @@ namespace CryptoTests.Ciphers
                 this.IV = new byte[IVBitSize / 8];
                 Random.NextBytes(this.IV);
             }
+            
+            byte[] cipherBytes;
+            try
+            {
+                var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
+                keyParameter = null;
 
-            var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
-            keyParameter = null;
+                cipher.Init(true, parameters);
 
-            cipher.Init(true, parameters);
-
-            //Generate Cipher Text With Auth Tag
-            var cipherBytes = new byte[cipher.GetOutputSize(plainBytes.Length)];
-            var len = cipher.ProcessBytes(plainBytes, 0, plainBytes.Length, cipherBytes, 0);
-            cipher.DoFinal(cipherBytes, len);
+                //Generate Cipher Text With Auth Tag
+                cipherBytes = new byte[cipher.GetOutputSize(plainBytes.Length)];
+                var len = cipher.ProcessBytes(plainBytes, 0, plainBytes.Length, cipherBytes, 0);
+                cipher.DoFinal(cipherBytes, len);
+            }
+            catch (Exception ex)
+            {
+                //Logger.Exception(ex);
+                if (ex is ArgumentException ||
+                    ex is InvalidCipherTextException ||
+                    ex is OverflowException)
+                {
+                    return null; // this is null here
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             //Assemble Message
             using (var combinedStream = new MemoryStream())
@@ -144,10 +162,23 @@ namespace CryptoTests.Ciphers
             if (String.IsNullOrEmpty(cipherText))
                 cipherText = String.Empty;
 
-            var cipherBytes = Convert.FromBase64String(cipherText);
+            byte[] cipherBytes;
+
+            try
+            {
+                // incase of corruption in base64 format
+                cipherBytes = Convert.FromBase64String(cipherText);
+            }
+            catch (FormatException ex)
+            {
+                //Logger.Exception(ex);
+                return null;
+            }
 
             var plainBytes = this.Decrypt(cipherBytes, AddtnlAuthDataLength);
 
+            if (plainBytes == null)
+                return null;
             return Encoding.UTF8.GetString(plainBytes);
         }
 
@@ -160,33 +191,42 @@ namespace CryptoTests.Ciphers
             {
                 using (var cipherReader = new BinaryReader(cipherStream))
                 {
-                    //Read Additional Authenticated Data (AAD)
+                    //Read Additional Authenticated Data (AddtnlAuthData)
                     var AddtnlAuthData = cipherReader.ReadBytes(AddtnlAuthDataLength);
 
-                    // Read out IV
-                    var IV = cipherReader.ReadBytes(IVBitSize / 8);
-
-                    // Format AEAD parameters 
-                    var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
-                    keyParameter = null;
-
-                    cipher.Init(false, parameters);
-
-                    // Read in cipher text, create output buffer
-                    var encryptedBytes = cipherReader.ReadBytes(cipherBytes.Length - AddtnlAuthDataLength - IV.Length);
-                    var clearBytes = new byte[cipher.GetOutputSize(encryptedBytes.Length)];
-
-                    // Decrypt ciphertext while verifying tag
-                    try
+                    byte[] clearBytes = null;
+                    try 
                     {
+                        // Read out IV
+                        var IV = cipherReader.ReadBytes(IVBitSize / 8);
+
+                        // Format AEAD parameters 
+                        var parameters = new AeadParameters(keyParameter, TagBitSize, IV, AddtnlAuthData);
+                        keyParameter = null;
+
+                        cipher.Init(false, parameters);
+
+                        // Read in cipher text, create output buffer
+                        var encryptedBytes = cipherReader.ReadBytes(cipherBytes.Length - AddtnlAuthDataLength - IV.Length);
+                        clearBytes = new byte[cipher.GetOutputSize(encryptedBytes.Length)];
+
+                        // Decrypt ciphertext while verifying hmac
                         var len = cipher.ProcessBytes(encryptedBytes, 0, encryptedBytes.Length, clearBytes, 0);
                         cipher.DoFinal(clearBytes, len);
                     }
-                    catch (InvalidCipherTextException)
+                    catch (Exception ex)
                     {
-                        //Return null if it doesn't authenticate
-                        //Log(...);
-                        throw;
+                        //Logger.Exception(ex);
+                        if (ex is ArgumentException ||
+                            ex is InvalidCipherTextException ||
+                            ex is OverflowException)
+                        {
+                            return null; // this is null here
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
 
                     return clearBytes;
@@ -194,9 +234,18 @@ namespace CryptoTests.Ciphers
             }
         }
 
+        // To maintain an interface compatible with BouncyBench
         public byte[] Decrypt(byte[] cipherBytes, int IVLength, int AddtnlAuthDataLength)
         {
             return Decrypt(cipherBytes, AddtnlAuthDataLength); // swallow IVLength !
+        }
+
+        public string GetName()
+        {
+            if (aesKey == null)
+                return "AES-GCM";
+            else
+                return String.Format("AES{0}-GCM", aesKey.Length * 8);
         }
 
         private IGcmMultiplier ChooseMultiplier(long p)

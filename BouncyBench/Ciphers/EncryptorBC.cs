@@ -57,7 +57,7 @@ namespace CryptoTests.Ciphers
             byte[] cipher = this.BouncyCastleCrypto(true, plain);
 
             // Format for output i.e.
-            // encrypted = nonSecretPayload || IV || ciphertext
+            // encrypted = AddtnlAuthData || IV || ciphertext
             long sizeEncrypted = 0;
             long offset = 0;
                         
@@ -90,7 +90,7 @@ namespace CryptoTests.Ciphers
         public byte[] Decrypt(byte[] encInput, int IVlength=0, int nonSecretPayloadLength=0)
         {
             // Format for output i.e.
-            // encInput = nonSecretPayload || IV || ciphertext
+            // encInput = AddtnlAuthData || IV || ciphertext
             // Get IV
             if (IVlength>0)
                 Array.Copy(encInput, nonSecretPayloadLength, IV, 0, IVlength);

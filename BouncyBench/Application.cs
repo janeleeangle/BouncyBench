@@ -13,7 +13,8 @@ namespace CryptoTests
 {
     public class Application
     {
-        private int size = 100;
+        private int bytesToEncrypt = 100;
+        private int AADbytesLength = 20;
         private int iterations = 200;
 
         public void Run()
@@ -30,7 +31,7 @@ namespace CryptoTests
             Console.SetOut(tmp); // we want you back Console!
 
             //Run and display results on 1st start for user convenience
-            TestLoop(size, iterations);
+            TestLoop(bytesToEncrypt, iterations);
 
             while (ongoing)
             {
@@ -38,7 +39,7 @@ namespace CryptoTests
                 switch (option)
                 {
                     case 'r':
-                        TestLoop(size, iterations);
+                        TestLoop(bytesToEncrypt, iterations);
                         break;
                     case 'q':
                         ongoing = false;
@@ -58,7 +59,8 @@ namespace CryptoTests
 
         private void ChangeTestParams()
         {
-            size = GetNewNumber(size, "size");
+            bytesToEncrypt = GetNewNumber(bytesToEncrypt, "number of bytes to encrypt");
+            AADbytesLength = GetNewNumber(AADbytesLength, "number of bytes of unencrypted but authenticated data");
             iterations = GetNewNumber(iterations, "iterations");
         }
 
@@ -84,7 +86,7 @@ namespace CryptoTests
         private char PrintMenu()
         {
             Console.WriteLine("R - Rerun tests");
-            Console.WriteLine("C - Change size({0}) and iterations({1})", size, iterations);
+            Console.WriteLine("C - Change bytes to encrypt({0}), AAD size({1}) or iterations({2})", bytesToEncrypt, AADbytesLength, iterations);
             Console.WriteLine("S - Size testing different input lengths");
             Console.WriteLine("Q - Quit");
             string input = Console.ReadLine().Replace(" ","").ToLowerInvariant();
@@ -116,32 +118,36 @@ namespace CryptoTests
             rng.NextBytes(key128);
             rng.NextBytes(IV);
 
+            var AddtnlAuthData = new byte[AADbytesLength];
+            Utility.ByteUtils.InitTo(AddtnlAuthData, 0xbe);
+
             ///////////////////////////////////////////////
             // AES
             ///////////////////////////////////////////////
-            new TestEncryptor<Aes>().RunTest(key128, null, clearText, iter);
-            new TestEncryptor<Aes>().RunTest(key256, null, clearText, iter);
+            new TestEncryptor<Aes>().RunTest(key128, null, clearText, AddtnlAuthData, iter);
+            new TestEncryptor<Aes>().RunTest(key256, null, clearText, AddtnlAuthData, iter);
 
             ///////////////////////////////////////////////
             // AES + HMAC
             ///////////////////////////////////////////////
-            new TestEncryptor<AesHmac>().RunTest(key128, null, clearText, iter);
-            new TestEncryptor<AesHmac>().RunTest(key256, null, clearText, iter);
+            new TestEncryptor<AesHmac>().RunTest(key128, null, clearText, AddtnlAuthData, iter);
+            new TestEncryptor<AesHmac>().RunTest(key256, null, clearText, AddtnlAuthData, iter);
 
             /////////////////////////////////////////////////////////////
             // Bouncy Castle regular ciphers 
             ////////////////////////////////////////////////////////////            
-            new TestEncryptorBC<AesFastEngine>().RunTest(key128, IV, clearText, iter); 
-            new TestEncryptorBC<AesFastEngine>().RunTest(key256, IV, clearText, iter);
-            new TestEncryptorBC<RC6Engine>().RunTest(key256, IV, clearText, iter); 
-            new TestEncryptorBC<TwofishEngine>().RunTest(key256, IV, clearText, iter);            
+            new TestEncryptorBC<AesFastEngine>().RunTest(key128, IV, clearText, AddtnlAuthData, iter);
+            new TestEncryptorBC<AesFastEngine>().RunTest(key256, IV, clearText, AddtnlAuthData, iter);
+            new TestEncryptorBC<RC6Engine>().RunTest(key256, IV, clearText, AddtnlAuthData, iter);
+            new TestEncryptorBC<TwofishEngine>().RunTest(key256, IV, clearText, AddtnlAuthData, iter);            
 
             /////////////////////////////////////////////////////////////
             // Bouncy Castle authenticated encryption ciphers
             ////////////////////////////////////////////////////////////
-            new TestEncryptor<AesGcm>().RunTest(key128, null, clearText, iter);            
-            new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, iter);
-
+            new TestEncryptor<AesGcm>().RunTest(key128, null, clearText, AddtnlAuthData, iter);
+            new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, AddtnlAuthData, iter);
+            
+            TestResult.PrintFooter();
             Console.WriteLine();
         }
 
@@ -150,6 +156,9 @@ namespace CryptoTests
             Console.WriteLine("Benchmark test is SIZE. Encrypt=>Decrypt");
             Console.WriteLine();
             TestResult.PrintHeader();
+
+            var AddtnlAuthData = new byte[AADbytesLength];
+            Utility.ByteUtils.InitTo(AddtnlAuthData, 0xbe);
 
             Random rng = new Random();
             var key256 = new byte[32];
@@ -167,8 +176,10 @@ namespace CryptoTests
                 {
                     clearText[i] = Convert.ToByte(i % 256);
                 }
-                new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, 1);
+                new TestEncryptor<AesGcm>().RunTest(key256, null, clearText, AddtnlAuthData, 1);
             }
+
+            TestResult.PrintFooter();
         }
     }
 }
