@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Security.Cryptography">
+      <HintPath>Lib\Security.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +49,7 @@
     <Compile Include="Ciphers\AesGcm.cs" />
     <Compile Include="Ciphers\AesHmac.cs" />
     <Compile Include="Ciphers\AesIBlockCipher.cs" />
+    <Compile Include="Ciphers\AesGcmNet.cs" />
     <Compile Include="Ciphers\EncryptorBC.cs" />
     <Compile Include="Ciphers\IEncryptor.cs" />
     <Compile Include="Program.cs" />

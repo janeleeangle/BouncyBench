@@ -134,6 +134,12 @@ namespace CryptoTests
             new TestEncryptor<AesHmac>().RunTest(key256, null, clearText, AddtnlAuthData, iter);
 
             /////////////////////////////////////////////////////////////
+            // AES-GCM .NET Security.Cryptography.dll  authenticated encryption ciphers
+            ////////////////////////////////////////////////////////////
+            new TestEncryptor<AesGcmNet>().RunTest(key128, null, clearText, AddtnlAuthData, iter);
+            new TestEncryptor<AesGcmNet>().RunTest(key256, null, clearText, AddtnlAuthData, iter);
+
+            /////////////////////////////////////////////////////////////
             // Bouncy Castle regular ciphers 
             ////////////////////////////////////////////////////////////            
             new TestEncryptorBC<AesFastEngine>().RunTest(key128, IV, clearText, AddtnlAuthData, iter);
